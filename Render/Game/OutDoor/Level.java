@@ -2,8 +2,8 @@ package Game.OutDoor;
 
 import Game.OutDoor.LevelElements.PNJ;
 import Game.OutDoor.LevelElements.Warp;
-import Graphic.Elements.MovingAnimatedImage;
-import Graphic.Graphic_Const;
+import UI.Elements.MovingAnimatedImage;
+import UI.Graphic_Const;
 import javafx.scene.image.*;
 
 import java.util.ArrayList;

@@ -1,4 +1,4 @@
-package Graphic.Elements;
+package UI.Elements;
 
 public class MovingAnimatedImage extends AnimatedImage {
     protected double positionX;

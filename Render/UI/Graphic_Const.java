@@ -1,4 +1,4 @@
-package Graphic;
+package UI;
 
 public class Graphic_Const {
     public static int H_TILES_PER_SCREEN = 64;

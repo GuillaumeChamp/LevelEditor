@@ -52,7 +52,7 @@
                 <artifactId>javafx-maven-plugin</artifactId>
                 <version>${javafx.maven.plugin.version}</version>
                 <configuration>
-                    <mainClass>Graphic.Game</mainClass>
+                    <mainClass>Editor</mainClass>
                 </configuration>
             </plugin>
         </plugins>
