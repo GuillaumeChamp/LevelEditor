@@ -64,18 +64,20 @@ public class EditorPanel extends VBox {
     }
 
     private void createTileSet(File file){
-        Image image = new Image(file.getAbsolutePath());
-        PixelReader reader = image.getPixelReader();
-        double width = image.getWidth();
-        double height = image.getHeight();
-        long hTile = Math.round(width/16);
-        long vTile = Math.round(height/16);
-        for (int i = 0; i < hTile; i++) {
-            for (int j = 0; j < vTile; j++) {
-                Image tileSkin = new WritableImage(reader,16*i,16*j,16,16);
-                tileSet.add(new Tile(tileSkin,"tile"+(i+j),false));
+        try {
+            Image image = new Image(file.getAbsolutePath());
+            PixelReader reader = image.getPixelReader();
+            double width = image.getWidth();
+            double height = image.getHeight();
+            long hTile = Math.round(width / 16);
+            long vTile = Math.round(height / 16);
+            for (int i = 0; i < hTile; i++) {
+                for (int j = 0; j < vTile; j++) {
+                    Image tileSkin = new WritableImage(reader, 16 * i, 16 * j, 16, 16);
+                    tileSet.add(new Tile(tileSkin, "tile" + (i + j), false));
+                }
             }
-        }
+        }catch (Exception ignored){}
     }
 
     private void paintTileSet() {
@@ -122,6 +124,9 @@ public class EditorPanel extends VBox {
 
     public static EditorPanel getPanel(Stage stage,double width,double height) {
         if (panel==null) panel=new EditorPanel(stage,width,height);
+        return panel;
+    }
+    public static EditorPanel getPanel(){
         return panel;
     }
 }

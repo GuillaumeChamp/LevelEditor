@@ -8,14 +8,22 @@ import javafx.scene.control.ScrollPane;
 
 
 public class LevelEditorScene extends ScrollPane {
-    static protected Canvas canvas;
+    protected Canvas canvas;
     Level level;
 
-    public LevelEditorScene(Canvas canvas,double width,double height) {
+    public LevelEditorScene(double width, double height) {
         this.setWidth(width);
         this.setHeight(height);
         level = new Level(true,160,160);
-        LevelEditorScene.canvas = canvas;
+        this.canvas = new Canvas(this.getWidth(),this.getHeight());
+        canvas.setOnMouseClicked(e->{
+
+            double x = e.getX();
+            double y = e.getY();
+            if (EditorPanel.getPanel().selectedTile==null) return;
+            modifyTileAt(x,y,EditorPanel.getPanel().getSelectedTile());
+            paint();
+        });
         this.setContent(canvas);
         level.initTiles();
         paint();
@@ -34,6 +42,11 @@ public class LevelEditorScene extends ScrollPane {
                 gc.strokeRect(i*tileSize*ratio,j*tileSize*ratio,tileSize*ratio,tileSize*ratio);
             }
         }
+    }
+    public void modifyTileAt(double x, double y,Tile newTile){
+        double ratio = Graphic_Const.ratio;
+        int tileSize = Graphic_Const.H_TILES_SIZE;
+        level.getTiles()[(int) Math.floor(x/(tileSize*ratio))][(int) Math.floor(y/(tileSize*ratio))] = newTile;
     }
 
 }

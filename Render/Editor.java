@@ -16,21 +16,18 @@ public class Editor extends Application {
 
         theStage.setTitle("Render");
 
-        Group root = new Group();
         int borderXSize = 0;
         int borderYSize = 70;
 
         final double defaultWidth = Screen.getPrimary().getBounds().getWidth()-borderXSize;
         final double defaultHeight = Screen.getPrimary().getBounds().getHeight()-borderYSize;
-        Canvas canvas = new Canvas(defaultWidth,defaultHeight);
 
-        root.getChildren().add(canvas);
 
         theStage.setOnCloseRequest(e->{});
         EditorPanel panel = EditorPanel.getPanel(theStage,defaultWidth,defaultHeight);
 
         splitPane = new SplitPane(
-                panel,new LevelEditorScene(canvas,defaultWidth,defaultHeight));
+                panel,new LevelEditorScene(defaultWidth,defaultHeight));
         splitPane.setOrientation(Orientation.HORIZONTAL);
         theStage.showingProperty().addListener(e-> splitPane.setDividerPosition(0,0.4));
         splitPane.getDividers().get(0).positionProperty().addListener(e-> panel.resizeOptions(splitPane.getDividers().get(0).getPosition()*theStage.getWidth(),theStage.getHeight()));
