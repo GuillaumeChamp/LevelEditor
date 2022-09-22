@@ -1,7 +1,6 @@
 package UI;
 
 import Game.OutDoor.LevelElements.Tile;
-import javafx.geometry.Bounds;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.control.Button;
@@ -25,6 +24,7 @@ public class EditorPanel extends VBox {
     ScrollPane tilePane;
     Canvas canvas;
     ArrayList<Tile> tileSet =new ArrayList<>();
+    Tile selectedTile;
 
     private EditorPanel(Stage stage,double width,double height) {
         //Sizing
@@ -39,6 +39,12 @@ public class EditorPanel extends VBox {
         gc = canvas.getGraphicsContext2D();
         //Adding behaviour
         tilePane.setHbarPolicy(ScrollPane.ScrollBarPolicy.NEVER);
+        canvas.setOnMouseClicked(e->{
+            double x = e.getX();
+            double y = e.getY();
+            selectedTile = getTileAt(x,y);
+            paintTileSet();
+        });
         picker.setOnAction(e->{
             File file = load.showOpenDialog(stage);
             createTileSet(file);
@@ -49,6 +55,9 @@ public class EditorPanel extends VBox {
         this.getChildren().add(picker);
         this.getChildren().add(tilePane);
     }
+
+
+
     public void resizeOptions(double width,double height){
         tilePane.setMaxWidth(width);
         if (!tileSet.isEmpty()) paintTileSet();
@@ -76,21 +85,40 @@ public class EditorPanel extends VBox {
         double ratio = Graphic_Const.ratio;
         int tileSize = Graphic_Const.H_TILES_SIZE;
         double tilesPerLine = Math.round(tilePane.getWidth()/(tileSize*ratio));
-        double xMax = (tilesPerLine-1)*tileSize;
-        //canvas.setHeight(tilesPerRow*tileSize*ratio);
+        double xMax = (tilesPerLine)*tileSize;
         gc.setStroke(Color.BLACK);
+        gc.setLineWidth(2);
         for (Tile t: tileSet) {
-            gc.drawImage(t.getSkin(),x*ratio,y*ratio,tileSize*ratio,tileSize*ratio);
             gc.strokeRect(x*ratio,y*ratio,tileSize*ratio,tileSize*ratio);
+            gc.drawImage(t.getSkin(),x*ratio,y*ratio,tileSize*ratio,tileSize*ratio);
             x = x+tileSize;
             if (x>=xMax){
                 x = 0;
                 y = y+tileSize;
             }
         }
+        if (selectedTile!=null){
+            int index = tileSet.indexOf(selectedTile);
+            gc.setLineWidth(5);
+            gc.setStroke(Color.RED);
+            double xx = (index%tilesPerLine)*tileSize;
+            double yy =  Math.floor(index/tilesPerLine)*tileSize;
+            gc.strokeRect(xx*ratio,yy*ratio,tileSize*ratio,tileSize*ratio);
+        }
 
     }
 
+    public Tile getSelectedTile() {
+        return selectedTile;
+    }
+
+    private Tile getTileAt(double x, double y) {
+        double ratio = Graphic_Const.ratio;
+        int tileSize = Graphic_Const.H_TILES_SIZE;
+        double tilesPerLine = Math.round(tilePane.getWidth()/(tileSize*ratio));
+        int index = (int) (Math.floor(y/(ratio*tileSize))*tilesPerLine+Math.floor(x/(tileSize*ratio)));
+        return tileSet.get(index);
+    }
 
     public static EditorPanel getPanel(Stage stage,double width,double height) {
         if (panel==null) panel=new EditorPanel(stage,width,height);
