@@ -8,13 +8,14 @@ import javafx.scene.control.ScrollPane;
 
 
 public class LevelEditorScene extends ScrollPane {
+    static LevelEditorScene levelEditorScene;
     protected Canvas canvas;
-    Level level;
+    private Level level;
 
-    public LevelEditorScene(double width, double height) {
+    private LevelEditorScene(double width, double height) {
         this.setWidth(width);
         this.setHeight(height);
-        level = new Level(true,160,160);
+        level = new Level(160,160);
         this.canvas = new Canvas(this.getWidth(),this.getHeight());
         canvas.setOnMouseClicked(e->{
 
@@ -25,13 +26,24 @@ public class LevelEditorScene extends ScrollPane {
             paint();
         });
         this.setContent(canvas);
-        level.initTiles();
+        Tile.initTiles(level.getTiles());
         paint();
+    }
 
+    public static LevelEditorScene getLevelEditorScene(double width,double height) {
+        if (levelEditorScene==null) levelEditorScene=new LevelEditorScene(width, height);
+        return levelEditorScene;
+    }
+
+    public void newLevelRequest() {
+        this.level = new Level(level.getTiles().length,level.getTiles()[0].length);
+        Tile.initTiles(level.getTiles());
+        paint();
     }
 
     public void paint(){
         GraphicsContext gc = canvas.getGraphicsContext2D();
+        gc.clearRect(0, 0, canvas.getWidth(), canvas.getHeight());
         int tileSize = Graphic_Const.H_TILES_SIZE;
         double ratio = Graphic_Const.ratio;
         Tile[][] tiles = level.getTiles();
@@ -46,7 +58,15 @@ public class LevelEditorScene extends ScrollPane {
     public void modifyTileAt(double x, double y,Tile newTile){
         double ratio = Graphic_Const.ratio;
         int tileSize = Graphic_Const.H_TILES_SIZE;
-        level.getTiles()[(int) Math.floor(x/(tileSize*ratio))][(int) Math.floor(y/(tileSize*ratio))] = newTile;
+        try {
+            level.getTiles()[(int) Math.floor(x/(tileSize*ratio))][(int) Math.floor(y/(tileSize*ratio))] = newTile;
+        }catch (Exception e){
+            System.out.println("Miss Click");
+        }
+    }
+    public void changeSize(int x,int y){
+        level.changeSize(x,y);
+        paint();
     }
 
 }

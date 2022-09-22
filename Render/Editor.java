@@ -2,9 +2,7 @@ import UI.EditorPanel;
 import UI.LevelEditorScene;
 import javafx.application.Application;
 import javafx.geometry.Orientation;
-import javafx.scene.Group;
 import javafx.scene.Scene;
-import javafx.scene.canvas.Canvas;
 import javafx.scene.control.*;
 import javafx.scene.layout.BorderPane;
 import javafx.stage.Screen;
@@ -25,17 +23,22 @@ public class Editor extends Application {
 
         theStage.setOnCloseRequest(e->{});
         EditorPanel panel = EditorPanel.getPanel(theStage,defaultWidth,defaultHeight);
+        LevelEditorScene level = LevelEditorScene.getLevelEditorScene(defaultWidth,defaultHeight);
 
-        splitPane = new SplitPane(
-                panel,new LevelEditorScene(defaultWidth,defaultHeight));
+        splitPane = new SplitPane(panel,level);
         splitPane.setOrientation(Orientation.HORIZONTAL);
         theStage.showingProperty().addListener(e-> splitPane.setDividerPosition(0,0.4));
         splitPane.getDividers().get(0).positionProperty().addListener(e-> panel.resizeOptions(splitPane.getDividers().get(0).getPosition()*theStage.getWidth(),theStage.getHeight()));
 
         // place splitPane as center
         BorderPane borderPane = new BorderPane(splitPane);
-
-        borderPane.setTop(new MenuBar(new Menu("File")));
+        MenuBar menuBar = new MenuBar();
+        Menu edit = new Menu("Edit");
+        MenuItem newLevel = new MenuItem("new level");
+        edit.getItems().add(newLevel);
+        newLevel.setOnAction(e-> level.newLevelRequest());
+        menuBar.getMenus().add(edit);
+        borderPane.setTop(menuBar);
 
         Scene scene = new Scene(borderPane, defaultWidth, defaultHeight);
         theStage.setScene(scene);

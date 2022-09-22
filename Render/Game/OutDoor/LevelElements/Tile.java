@@ -16,6 +16,13 @@ public class Tile {
         this.type = type;
         this.collision = collision;
     }
+    public static void initTiles(Tile[][] tiles){
+        for (int i = 0; i < tiles.length; i++) {
+            for (int j = 0; j < tiles[0].length; j++) {
+                tiles[i][j] = new Tile();
+            }
+        }
+    }
 
     public void setType(String type) {
         this.type = type;
