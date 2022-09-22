@@ -9,4 +9,5 @@ public class Graphic_Const {
     public static int H_PLAYER_TILE_SIZE = 2;
     public static int SPRITE_WIDTH=64;
     public static int SPRITE_HEIGHT=64;
+    public static double ratio = 2;
 }

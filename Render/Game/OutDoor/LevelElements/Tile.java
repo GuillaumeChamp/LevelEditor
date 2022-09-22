@@ -8,6 +8,15 @@ public class Tile {
     String type="void";
     Boolean collision=false;
 
+    public Tile() {
+    }
+
+    public Tile(Image skin, String type, Boolean collision) {
+        this.skin = skin;
+        this.type = type;
+        this.collision = collision;
+    }
+
     public void setType(String type) {
         this.type = type;
     }
