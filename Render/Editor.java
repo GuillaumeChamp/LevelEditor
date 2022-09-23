@@ -8,6 +8,8 @@ import javafx.scene.layout.BorderPane;
 import javafx.stage.Screen;
 import javafx.stage.Stage;
 
+import java.io.IOException;
+
 public class Editor extends Application {
     SplitPane splitPane;
     public void start(Stage theStage) {
@@ -33,10 +35,19 @@ public class Editor extends Application {
         // place splitPane as center
         BorderPane borderPane = new BorderPane(splitPane);
         MenuBar menuBar = new MenuBar();
-        Menu edit = new Menu("Edit");
+        Menu edit = new Menu("File");
         MenuItem newLevel = new MenuItem("new level");
         edit.getItems().add(newLevel);
         newLevel.setOnAction(e-> level.newLevelRequest());
+        MenuItem save = new MenuItem("save");
+        save.setOnAction(e->{
+            try {
+                level.saveLevel();
+            } catch (IOException ex) {
+                throw new RuntimeException(ex);
+            }
+        });
+        edit.getItems().add(save);
         menuBar.getMenus().add(edit);
         borderPane.setTop(menuBar);
 

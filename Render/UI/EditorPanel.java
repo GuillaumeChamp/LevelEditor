@@ -34,6 +34,7 @@ public class EditorPanel extends VBox {
         //Creating component
         TextField widthField = new TextField("200");
         TextField heightField = new TextField("200");
+        TextField levelName = new TextField("untitled");
         FileChooser load =new FileChooser();
         Button picker =new Button("Import TileSet");
         canvas = new Canvas(this.getWidth(),this.getWidth());
@@ -67,6 +68,7 @@ public class EditorPanel extends VBox {
                 LevelEditorScene.getLevelEditorScene(0,0).changeSize(Integer.parseInt(widthField.getText()),Integer.parseInt(heightField.getText()));
             }
         });
+        levelName.setOnAction(e-> LevelEditorScene.getLevelEditorScene(0,0).rename(levelName.getText()));
         picker.setOnAction(e->{
             File file = load.showOpenDialog(stage);
             createTileSet(file);
@@ -74,6 +76,7 @@ public class EditorPanel extends VBox {
         });
         //Adding elements
         this.getChildren().add(new HBox(widthField,heightField));
+        this.getChildren().add(new VBox(new Label("level Name"),levelName));
         this.getChildren().add(new Label("Editor"));
         this.getChildren().add(picker);
         this.getChildren().add(tilePane);
@@ -97,7 +100,7 @@ public class EditorPanel extends VBox {
             for (int j = 0; j < vTile; j++)
                 for (int i = 0; i < hTile; i++) {
                         Image tileSkin = new WritableImage(reader, tileSize * i, tileSize * j, tileSize, tileSize);
-                        tileSet.add(new Tile(tileSkin, "tile" + (i + j), false));
+                        tileSet.add(new Tile(tileSkin, "tile" + i+"." + j, false));
                     }
         }catch (Exception ignored){}
     }

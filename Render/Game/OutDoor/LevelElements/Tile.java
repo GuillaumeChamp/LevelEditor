@@ -4,11 +4,14 @@ import UI.Elements.ImageHolder;
 import javafx.scene.image.Image;
 
 public class Tile {
-    Image skin = ImageHolder.getImage("Skin/player.png");
-    String type="void";
-    Boolean collision=false;
+    Image skin;
+    String type;
+    Boolean collision;
 
     public Tile() {
+        skin=ImageHolder.getImage("Skin/player.png");
+        type="null";
+        collision=true;
     }
 
     public Tile(Image skin, String type, Boolean collision) {
@@ -17,9 +20,10 @@ public class Tile {
         this.collision = collision;
     }
     public static void initTiles(Tile[][] tiles){
+        Tile nullTile = new Tile();
         for (int i = 0; i < tiles.length; i++) {
             for (int j = 0; j < tiles[0].length; j++) {
-                tiles[i][j] = new Tile();
+                tiles[i][j] = nullTile;
             }
         }
     }

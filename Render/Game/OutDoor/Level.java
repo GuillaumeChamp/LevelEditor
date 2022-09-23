@@ -8,7 +8,7 @@ import java.util.ArrayList;
 
 public class Level {
     public static String path="Level//";
-    private String name;
+    private String name="untiled";
     private Tile[][] tiles;
     private final boolean peaceful= false;
 
@@ -42,5 +42,13 @@ public class Level {
             System.arraycopy(tiles[i], 0, newTiles[i], 0, columnToCopy);
         }
         tiles=newTiles;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public String getName() {
+        return name;
     }
 }

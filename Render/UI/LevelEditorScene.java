@@ -2,9 +2,12 @@ package UI;
 
 import Game.OutDoor.Level;
 import Game.OutDoor.LevelElements.Tile;
+import Loader.Saver;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.control.ScrollPane;
+
+import java.io.IOException;
 
 
 public class LevelEditorScene extends ScrollPane {
@@ -67,6 +70,12 @@ public class LevelEditorScene extends ScrollPane {
     public void changeSize(int x,int y){
         level.changeSize(x,y);
         paint();
+    }
+    public void saveLevel() throws IOException {
+        Saver.saveTile(level.getTiles(),level.getName());
+    }
+    public void rename(String name){
+        level.setName(name);
     }
 
 }
