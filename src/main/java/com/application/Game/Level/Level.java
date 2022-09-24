@@ -31,6 +31,7 @@ public class Level {
             System.arraycopy(overTiles[i], 0, newOverTiles[i], 0, columnToCopy);
         }
         tiles=newTiles;
+        overTiles= newOverTiles;
     }
 
     public void setName(String name) {
