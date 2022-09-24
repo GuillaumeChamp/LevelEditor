@@ -1,6 +1,6 @@
-package UI;
+package com.application.UI;
 
-import Game.OutDoor.LevelElements.Tile;
+import com.application.Game.OutDoor.LevelElements.Tile;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.control.*;
@@ -76,7 +76,7 @@ public class EditorPanel extends VBox {
         //Adding elements
         this.getChildren().add(new HBox(widthField,heightField));
         this.getChildren().add(new VBox(new Label("level Name"),levelName));
-        this.getChildren().add(new Label("Editor"));
+        this.getChildren().add(new Label("main.java.com.application.Editor"));
         this.getChildren().add(picker);
         this.getChildren().add(tilePane);
     }

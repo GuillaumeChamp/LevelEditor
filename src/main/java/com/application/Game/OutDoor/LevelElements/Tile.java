@@ -1,6 +1,6 @@
-package Game.OutDoor.LevelElements;
+package com.application.Game.OutDoor.LevelElements;
 
-import UI.Elements.ImageHolder;
+import com.application.UI.Elements.ImageHolder;
 import javafx.scene.image.Image;
 
 public class Tile {
@@ -9,7 +9,7 @@ public class Tile {
     Boolean collision;
 
     public Tile() {
-        skin=ImageHolder.getImage("Skin/player.png");
+        skin= ImageHolder.getImage("Skin/player.png");
         collision=true;
     }
 

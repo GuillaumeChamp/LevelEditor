@@ -1,6 +1,6 @@
-package Game.OutDoor.LevelElements;
+package com.application.Game.OutDoor.LevelElements;
 
-import Game.OutDoor.Level;
+import com.application.Game.OutDoor.Level;
 import javafx.geometry.Rectangle2D;
 
 public class Warp {

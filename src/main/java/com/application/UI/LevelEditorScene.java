@@ -1,8 +1,7 @@
-package UI;
+package com.application.UI;
 
-import Game.OutDoor.Level;
-import Game.OutDoor.LevelElements.Tile;
-import Loader.Saver;
+import com.application.Game.OutDoor.Level;
+import com.application.Game.OutDoor.LevelElements.Tile;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.control.ScrollPane;

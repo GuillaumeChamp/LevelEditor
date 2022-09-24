@@ -1,8 +1,7 @@
-package Game.OutDoor;
+package com.application.Game.OutDoor;
 
-import Game.OutDoor.LevelElements.Tile;
-import Game.OutDoor.LevelElements.Warp;
-import UI.Graphic_Const;
+import com.application.Game.OutDoor.LevelElements.Tile;
+import com.application.Game.OutDoor.LevelElements.Warp;
 
 import java.util.ArrayList;
 

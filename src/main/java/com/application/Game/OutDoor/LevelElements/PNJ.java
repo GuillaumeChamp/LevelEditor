@@ -1,7 +1,8 @@
-package Game.OutDoor.LevelElements;
+package com.application.Game.OutDoor.LevelElements;
 
-import UI.Elements.MovingAnimatedImage;
-import UI.Graphic_Const;
+
+import com.application.UI.Elements.MovingAnimatedImage;
+import com.application.UI.Graphic_Const;
 
 public class PNJ {
     protected String name;

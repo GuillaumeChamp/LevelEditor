@@ -1,6 +1,6 @@
-package UI.Elements;
+package com.application.UI.Elements;
 
-import Game.Universal.ImageCropper;
+import com.application.Game.Universal.ImageCropper;
 import javafx.scene.image.Image;
 
 import java.io.Serializable;

@@ -1,6 +1,8 @@
-import Loader.Saver;
-import UI.EditorPanel;
-import UI.LevelEditorScene;
+package com.application;
+
+import com.application.UI.EditorPanel;
+import com.application.UI.LevelEditorScene;
+import com.application.UI.Saver;
 import javafx.application.Application;
 import javafx.geometry.Orientation;
 import javafx.scene.Scene;
@@ -19,7 +21,7 @@ public class Editor extends Application {
     SplitPane splitPane;
     public void start(Stage theStage) {
 
-        theStage.setTitle("Level Editor");
+        theStage.setTitle("Level main.java.com.application.Editor");
 
         int borderXSize = 0;
         int borderYSize = 70;

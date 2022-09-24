@@ -1,4 +1,4 @@
-package Game.Universal;
+package com.application.Game.Universal;
 
 import javafx.scene.image.Image;
 import javafx.scene.image.PixelReader;

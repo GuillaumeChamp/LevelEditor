@@ -1,4 +1,4 @@
-package UI;
+package com.application.UI;
 
 public class Graphic_Const {
     public static int TILES_SIZE =16;

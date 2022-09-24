@@ -1,4 +1,4 @@
-package UI.Elements;
+package com.application.UI.Elements;
 
 import javafx.scene.image.Image;
 
