@@ -1,10 +1,13 @@
 package com.application.UI;
 
-import com.application.Game.OutDoor.Level;
-import com.application.Game.OutDoor.LevelElements.Tile;
+import com.application.Game.Level.Level;
+import com.application.Game.Level.LevelElements.Layer0.Tile;
+import com.application.Game.Level.LevelElements.Layer1.OverTile;
+import com.application.Game.Level.LevelElements.TileTyped;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.control.ScrollPane;
+import javafx.scene.paint.Color;
 
 
 public class LevelEditorScene extends ScrollPane {
@@ -47,19 +50,31 @@ public class LevelEditorScene extends ScrollPane {
         int tileSize = Graphic_Const.TILES_SIZE;
         double ratio = Graphic_Const.ratio;
         Tile[][] tiles = level.getTiles();
+        OverTile[][] overTiles = level.getOverTiles();
         for(int i=0;i<tiles.length;i++){
             for (int j=0;j<tiles[0].length;j++){
-                if (tiles[i][j]==null) continue;
-                gc.drawImage(tiles[i][j].getSkin(),i*tileSize*ratio,j*tileSize*ratio,tileSize*ratio,tileSize*ratio);
-                gc.strokeRect(i*tileSize*ratio,j*tileSize*ratio,tileSize*ratio,tileSize*ratio);
+                if (tiles[i][j]!=null) {
+                    gc.drawImage(tiles[i][j].getSkin(), i * tileSize * ratio, j * tileSize * ratio, tileSize * ratio, tileSize * ratio);
+                }
+                if (overTiles[i][j]!= null){
+                    gc.setFill(Color.color(0.5,0.5,0.5,0.5));
+                    gc.fillRect( i * tileSize * ratio, j * tileSize * ratio, tileSize * ratio, tileSize * ratio);
+                }
+                gc.strokeRect(i * tileSize * ratio, j * tileSize * ratio, tileSize * ratio, tileSize * ratio);
             }
         }
     }
-    public void modifyTileAt(double x, double y,Tile newTile){
+    public void modifyTileAt(double x, double y, TileTyped newTile){
         double ratio = Graphic_Const.ratio;
         int tileSize = Graphic_Const.TILES_SIZE;
         try {
-            level.getTiles()[(int) Math.floor(x/(tileSize*ratio))][(int) Math.floor(y/(tileSize*ratio))] = newTile;
+            double xIndex = Math.floor(x / (tileSize * ratio));
+            double yIndex = Math.floor(y / (tileSize * ratio));
+            if (newTile.getClass()==Tile.class) level.getTiles()[(int) xIndex][(int) yIndex] = (Tile) newTile;
+            if (OverTile.class.isAssignableFrom(newTile.getClass())) {
+                System.out.println("ok");
+                level.getOverTiles()[(int) xIndex][(int) yIndex] = (OverTile) newTile;
+            }
         }catch (Exception e){
             System.out.println("Miss Click");
         }

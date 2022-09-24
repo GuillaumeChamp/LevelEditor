@@ -1,7 +1,7 @@
 package com.application.UI;
 
-import com.application.Game.OutDoor.Level;
-import com.application.Game.OutDoor.LevelElements.Tile;
+import com.application.Game.Level.Level;
+import com.application.Game.Level.LevelElements.Layer0.Tile;
 import javafx.embed.swing.SwingFXUtils;
 import javafx.scene.image.Image;
 import javafx.scene.image.PixelReader;

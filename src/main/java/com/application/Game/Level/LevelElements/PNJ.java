@@ -1,4 +1,4 @@
-package com.application.Game.OutDoor.LevelElements;
+package com.application.Game.Level.LevelElements;
 
 
 import com.application.UI.Elements.MovingAnimatedImage;

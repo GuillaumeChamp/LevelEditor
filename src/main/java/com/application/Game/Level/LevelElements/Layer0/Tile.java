@@ -1,11 +1,11 @@
-package com.application.Game.OutDoor.LevelElements;
+package com.application.Game.Level.LevelElements.Layer0;
 
+import com.application.Game.Level.LevelElements.TileTyped;
 import com.application.UI.Elements.ImageHolder;
 import javafx.scene.image.Image;
 
-public class Tile {
+public class Tile implements TileTyped {
     Image skin;
-
     Boolean collision;
 
     public Tile() {

@@ -1,6 +1,9 @@
 package com.application.UI;
 
-import com.application.Game.OutDoor.LevelElements.Tile;
+import com.application.Game.Level.LevelElements.Layer0.Tile;
+import com.application.Game.Level.LevelElements.Layer1.OverTile;
+import com.application.Game.Level.LevelElements.TileTyped;
+import com.application.UI.Elements.PopUpTP;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.control.*;
@@ -17,15 +20,19 @@ import javafx.util.converter.NumberStringConverter;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Optional;
 
 
 public class EditorPanel extends VBox {
     static EditorPanel panel;
-    GraphicsContext gc;
     ScrollPane tilePane;
-    Canvas canvas;
+    ScrollPane overTilePane;
+    Canvas canvasTile;
+    Canvas canvasOverTile;
     ArrayList<Tile> tileSet =new ArrayList<>();
-    Tile selectedTile;
+    ArrayList<OverTile> overTileSet =new ArrayList<>();
+    TileTyped selectedTile;
+    Button addTP = new Button("add TP");
 
     private EditorPanel(Stage stage,double width,double height) {
         //Sizing
@@ -37,15 +44,18 @@ public class EditorPanel extends VBox {
         TextField levelName = new TextField("untitled");
         FileChooser load =new FileChooser();
         Button picker =new Button("Import TileSet");
-        canvas = new Canvas(this.getWidth(),this.getWidth());
-        tilePane = new ScrollPane(canvas);
+        canvasTile = new Canvas(this.getWidth(),this.getWidth());
+        canvasOverTile =  new Canvas(this.getWidth(),this.getWidth());
+        tilePane = new ScrollPane(canvasTile);
         tilePane.resize(this.getWidth(),this.getWidth());
-        gc = canvas.getGraphicsContext2D();
+        overTilePane = new ScrollPane(canvasOverTile);
+        overTilePane.resize(this.getWidth(),this.getWidth());
         //Adding behaviour
         widthField.setTextFormatter(new TextFormatter<>(new NumberStringConverter()));
         heightField.setTextFormatter(new TextFormatter<>(new NumberStringConverter()));
         tilePane.setHbarPolicy(ScrollPane.ScrollBarPolicy.NEVER);
-        canvas.setOnMouseClicked(e->{
+        overTilePane.setHbarPolicy(ScrollPane.ScrollBarPolicy.NEVER);
+        canvasTile.setOnMouseClicked(e->{
             double x = e.getX();
             double y = e.getY();
             try {
@@ -55,6 +65,26 @@ public class EditorPanel extends VBox {
                 return;
             }
             paintTileSet();
+            paintOverTileSet();
+        });
+        canvasOverTile.setOnMouseClicked(e->{
+            double x = e.getX();
+            double y = e.getY();
+            try {
+                selectedTile = getOverTileAt(x,y);
+            } catch (Exception ex) {
+                System.out.println("Please create an over tileset");
+                return;
+            }
+            paintOverTileSet();
+            paintTileSet();
+        });
+        addTP.setOnAction(e->{
+            PopUpTP popUpTP = new PopUpTP();
+            Optional<ButtonType> ans = popUpTP.showAndWait();
+            if (ans.get().getText().equals("confirm"))
+                overTileSet.add(popUpTP.getTP());
+            paintOverTileSet();
         });
         widthField.setText("200");
         heightField.setText("200");
@@ -79,18 +109,29 @@ public class EditorPanel extends VBox {
         this.getChildren().add(new Label("main.java.com.application.Editor"));
         this.getChildren().add(picker);
         this.getChildren().add(tilePane);
+        this.getChildren().add(addTP);
+        this.getChildren().add(overTilePane);
+    }
+
+    private TileTyped getOverTileAt(double x, double y) throws IndexOutOfBoundsException {
+        double ratio = Graphic_Const.ratio;
+        int tileSize = Graphic_Const.TILES_SIZE;
+        double tilesPerLine = Math.round(tilePane.getWidth()/(tileSize*ratio));
+        int index = (int) (Math.floor(y/(ratio*tileSize))*tilesPerLine+Math.floor(x/(tileSize*ratio)));
+        return overTileSet.get(index);
     }
 
 
     public void resizeOptions(double width,double height){
         tilePane.setMaxWidth(width);
         if (!tileSet.isEmpty()) paintTileSet();
+        if (!overTileSet.isEmpty()) paintOverTileSet();
     }
 
     public void createTileSet(File file){
         try {
             int tileSize = Graphic_Const.TILES_SIZE;
-            Image image = new Image(file.getAbsolutePath());
+            Image image = new Image(file.toURI().toString());
             PixelReader reader = image.getPixelReader();
             double width = image.getWidth();
             double height = image.getHeight();
@@ -102,11 +143,13 @@ public class EditorPanel extends VBox {
                         tileSet.add(new Tile(tileSkin, false));
                     }
             paintTileSet();
-        }catch (Exception ignored){}
+        }catch (Exception ignored){
+        }
     }
 
     private void paintTileSet() {
-        gc.clearRect(0, 0, canvas.getWidth(), canvas.getHeight());
+        GraphicsContext gc = canvasTile.getGraphicsContext2D();
+        gc.clearRect(0, 0, canvasTile.getWidth(), canvasTile.getHeight());
         double x = 0;
         double y = 0;
         double ratio = Graphic_Const.ratio;
@@ -124,17 +167,47 @@ public class EditorPanel extends VBox {
                 y = y+tileSize;
             }
         }
-        if (selectedTile!=null){
-            int index = tileSet.indexOf(selectedTile);
-            gc.setLineWidth(5);
-            gc.setStroke(Color.RED);
-            double xx = (index%tilesPerLine)*tileSize;
-            double yy =  Math.floor(index/tilesPerLine)*tileSize;
-            gc.strokeRect(xx*ratio,yy*ratio,tileSize*ratio,tileSize*ratio);
+        if (selectedTile==null || selectedTile.getClass()!=Tile.class) return;
+        int index = tileSet.indexOf(selectedTile);
+        gc.setLineWidth(5);
+        gc.setStroke(Color.RED);
+        double xx = (index%tilesPerLine)*tileSize;
+        double yy =  Math.floor(index/tilesPerLine)*tileSize;
+        gc.strokeRect(xx*ratio,yy*ratio,tileSize*ratio,tileSize*ratio);
+
+    }
+    private void paintOverTileSet() {
+        GraphicsContext gc = canvasOverTile.getGraphicsContext2D();
+        gc.clearRect(0, 0, canvasTile.getWidth(), canvasTile.getHeight());
+        double x = 0;
+        double y = 0;
+        double ratio = Graphic_Const.ratio;
+        int tileSize = Graphic_Const.TILES_SIZE;
+        double tilesPerLine = Math.round(overTilePane.getWidth()/(tileSize*ratio));
+        double xMax = (tilesPerLine)*tileSize;
+        gc.setStroke(Color.BLACK);
+        gc.setLineWidth(2);
+        gc.setFill(Color.color(0.5,0.5,0.5,0.5));
+        for (OverTile t: overTileSet) {
+            if (t==null) return;
+            gc.strokeRect(x*ratio,y*ratio,tileSize*ratio,tileSize*ratio);
+            gc.fillRect(x*ratio,y*ratio,tileSize*ratio,tileSize*ratio);
+            x = x+tileSize;
+            if (x>=xMax){
+                x = 0;
+                y = y+tileSize;
+            }
         }
+        if (selectedTile==null || selectedTile.getClass() == Tile.class) return;
+        int index = overTileSet.indexOf((OverTile) selectedTile);
+        gc.setLineWidth(5);
+        gc.setStroke(Color.RED);
+        double xx = (index%tilesPerLine)*tileSize;
+        double yy =  Math.floor(index/tilesPerLine)*tileSize;
+        gc.strokeRect(xx*ratio,yy*ratio,tileSize*ratio,tileSize*ratio);
     }
 
-    public Tile getSelectedTile() {
+    public TileTyped getSelectedTile() {
         return selectedTile;
     }
 
