@@ -1,20 +1,25 @@
+import Loader.Saver;
 import UI.EditorPanel;
 import UI.LevelEditorScene;
 import javafx.application.Application;
 import javafx.geometry.Orientation;
 import javafx.scene.Scene;
-import javafx.scene.control.*;
+import javafx.scene.control.Menu;
+import javafx.scene.control.MenuBar;
+import javafx.scene.control.MenuItem;
+import javafx.scene.control.SplitPane;
 import javafx.scene.layout.BorderPane;
+import javafx.stage.FileChooser;
 import javafx.stage.Screen;
 import javafx.stage.Stage;
 
-import java.io.IOException;
+import java.io.File;
 
 public class Editor extends Application {
     SplitPane splitPane;
     public void start(Stage theStage) {
 
-        theStage.setTitle("Render");
+        theStage.setTitle("Level Editor");
 
         int borderXSize = 0;
         int borderYSize = 70;
@@ -43,11 +48,22 @@ public class Editor extends Application {
         save.setOnAction(e->{
             try {
                 level.saveLevel();
-            } catch (IOException ex) {
+            } catch (Exception ex) {
+                throw new RuntimeException(ex);
+            }
+        });
+        MenuItem load = new MenuItem("load");
+        load.setOnAction(e->{
+            try {
+                File file = new FileChooser().showOpenDialog(theStage);
+                level.setLevel(Saver.loadLevel(file));
+                panel.createTileSet(new File(file.getAbsolutePath().replace(".level",".png")));
+            } catch (Exception ex) {
                 throw new RuntimeException(ex);
             }
         });
         edit.getItems().add(save);
+        edit.getItems().add(load);
         menuBar.getMenus().add(edit);
         borderPane.setTop(menuBar);
 

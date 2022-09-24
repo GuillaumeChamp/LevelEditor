@@ -7,8 +7,6 @@ import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.control.ScrollPane;
 
-import java.io.IOException;
-
 
 public class LevelEditorScene extends ScrollPane {
     static LevelEditorScene levelEditorScene;
@@ -47,7 +45,7 @@ public class LevelEditorScene extends ScrollPane {
     public void paint(){
         GraphicsContext gc = canvas.getGraphicsContext2D();
         gc.clearRect(0, 0, canvas.getWidth(), canvas.getHeight());
-        int tileSize = Graphic_Const.H_TILES_SIZE;
+        int tileSize = Graphic_Const.TILES_SIZE;
         double ratio = Graphic_Const.ratio;
         Tile[][] tiles = level.getTiles();
         for(int i=0;i<tiles.length;i++){
@@ -60,7 +58,7 @@ public class LevelEditorScene extends ScrollPane {
     }
     public void modifyTileAt(double x, double y,Tile newTile){
         double ratio = Graphic_Const.ratio;
-        int tileSize = Graphic_Const.H_TILES_SIZE;
+        int tileSize = Graphic_Const.TILES_SIZE;
         try {
             level.getTiles()[(int) Math.floor(x/(tileSize*ratio))][(int) Math.floor(y/(tileSize*ratio))] = newTile;
         }catch (Exception e){
@@ -71,11 +69,15 @@ public class LevelEditorScene extends ScrollPane {
         level.changeSize(x,y);
         paint();
     }
-    public void saveLevel() throws IOException {
-        Saver.saveTile(level.getTiles(),level.getName());
+    public void saveLevel() throws Exception {
+        Saver.saveLevel(level);
     }
     public void rename(String name){
         level.setName(name);
     }
 
+    public void setLevel(Level loadLevel) {
+        this.level=loadLevel;
+        paint();
+    }
 }

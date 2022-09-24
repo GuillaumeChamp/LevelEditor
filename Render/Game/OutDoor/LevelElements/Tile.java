@@ -5,18 +5,16 @@ import javafx.scene.image.Image;
 
 public class Tile {
     Image skin;
-    String type;
+
     Boolean collision;
 
     public Tile() {
         skin=ImageHolder.getImage("Skin/player.png");
-        type="null";
         collision=true;
     }
 
-    public Tile(Image skin, String type, Boolean collision) {
+    public Tile(Image skin, Boolean collision) {
         this.skin = skin;
-        this.type = type;
         this.collision = collision;
     }
     public static void initTiles(Tile[][] tiles){
@@ -26,14 +24,6 @@ public class Tile {
                 tiles[i][j] = nullTile;
             }
         }
-    }
-
-    public void setType(String type) {
-        this.type = type;
-    }
-
-    public String getType() {
-        return type;
     }
 
     public void setSkin(Image skin) {

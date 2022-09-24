@@ -72,7 +72,6 @@ public class EditorPanel extends VBox {
         picker.setOnAction(e->{
             File file = load.showOpenDialog(stage);
             createTileSet(file);
-            paintTileSet();
         });
         //Adding elements
         this.getChildren().add(new HBox(widthField,heightField));
@@ -88,9 +87,9 @@ public class EditorPanel extends VBox {
         if (!tileSet.isEmpty()) paintTileSet();
     }
 
-    private void createTileSet(File file){
+    public void createTileSet(File file){
         try {
-            int tileSize = Graphic_Const.H_TILES_SIZE;
+            int tileSize = Graphic_Const.TILES_SIZE;
             Image image = new Image(file.getAbsolutePath());
             PixelReader reader = image.getPixelReader();
             double width = image.getWidth();
@@ -100,8 +99,9 @@ public class EditorPanel extends VBox {
             for (int j = 0; j < vTile; j++)
                 for (int i = 0; i < hTile; i++) {
                         Image tileSkin = new WritableImage(reader, tileSize * i, tileSize * j, tileSize, tileSize);
-                        tileSet.add(new Tile(tileSkin, "tile" + i+"." + j, false));
+                        tileSet.add(new Tile(tileSkin, false));
                     }
+            paintTileSet();
         }catch (Exception ignored){}
     }
 
@@ -110,7 +110,7 @@ public class EditorPanel extends VBox {
         double x = 0;
         double y = 0;
         double ratio = Graphic_Const.ratio;
-        int tileSize = Graphic_Const.H_TILES_SIZE;
+        int tileSize = Graphic_Const.TILES_SIZE;
         double tilesPerLine = Math.round(tilePane.getWidth()/(tileSize*ratio));
         double xMax = (tilesPerLine)*tileSize;
         gc.setStroke(Color.BLACK);
@@ -140,7 +140,7 @@ public class EditorPanel extends VBox {
 
     private Tile getTileAt(double x, double y) throws IndexOutOfBoundsException{
         double ratio = Graphic_Const.ratio;
-        int tileSize = Graphic_Const.H_TILES_SIZE;
+        int tileSize = Graphic_Const.TILES_SIZE;
         double tilesPerLine = Math.round(tilePane.getWidth()/(tileSize*ratio));
         int index = (int) (Math.floor(y/(ratio*tileSize))*tilesPerLine+Math.floor(x/(tileSize*ratio)));
         return tileSet.get(index);
