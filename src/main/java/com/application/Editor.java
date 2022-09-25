@@ -1,5 +1,6 @@
 package com.application;
 
+import com.application.Game.Level.Level;
 import com.application.UI.EditorPanel;
 import com.application.UI.LevelEditorScene;
 import com.application.UI.Saver;
@@ -58,8 +59,11 @@ public class Editor extends Application {
         load.setOnAction(e->{
             try {
                 File file = new FileChooser().showOpenDialog(theStage);
-                level.setLevel(Saver.loadLevel(file));
-                panel.createTileSet(new File(file.getAbsolutePath().replace(".level",".png")));
+                Level level1 = Saver.loadLevel(file);
+                level.setLevel(level1);
+                panel.setLevelName(level1.getName());
+                panel.createTileSet(new File(file.getAbsolutePath().replace(".level0",".png")));
+                panel.loadOverTiles(new File(file.getAbsolutePath().replace(".level0", ".level1")));
             } catch (Exception ex) {
                 throw new RuntimeException(ex);
             }

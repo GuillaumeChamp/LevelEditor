@@ -15,6 +15,10 @@ public class Level {
         overTiles = new OverTile[hTile][vTile];
     }
 
+    public void setOverTiles(OverTile[][] overTiles) {
+        this.overTiles = overTiles;
+    }
+
     public Tile[][] getTiles() {
         return tiles;
     }

@@ -19,6 +19,9 @@ import javafx.stage.Stage;
 import javafx.util.converter.NumberStringConverter;
 
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.ObjectInputStream;
 import java.util.ArrayList;
 import java.util.Optional;
 
@@ -33,6 +36,7 @@ public class EditorPanel extends VBox {
     ArrayList<OverTile> overTileSet =new ArrayList<>();
     TileTyped selectedTile;
     Button addTP = new Button("add TP");
+    TextField levelName = new TextField("untitled");
 
     private EditorPanel(Stage stage,double width,double height) {
         //Sizing
@@ -41,7 +45,6 @@ public class EditorPanel extends VBox {
         //Creating component
         TextField widthField = new TextField("200");
         TextField heightField = new TextField("200");
-        TextField levelName = new TextField("untitled");
         FileChooser load =new FileChooser();
         Button picker =new Button("Import TileSet");
         canvasTile = new Canvas(this.getWidth(),this.getWidth());
@@ -98,7 +101,7 @@ public class EditorPanel extends VBox {
                 LevelEditorScene.getLevelEditorScene(0,0).changeSize(Integer.parseInt(widthField.getText()),Integer.parseInt(heightField.getText()));
             }
         });
-        levelName.setOnAction(e-> LevelEditorScene.getLevelEditorScene(0,0).rename(levelName.getText()));
+        levelName.setOnKeyPressed(e-> LevelEditorScene.getLevelEditorScene(0,0).rename(levelName.getText()));
         picker.setOnAction(e->{
             File file = load.showOpenDialog(stage);
             createTileSet(file);
@@ -143,7 +146,8 @@ public class EditorPanel extends VBox {
                         tileSet.add(new Tile(tileSkin, false));
                     }
             paintTileSet();
-        }catch (Exception ignored){
+        }catch (Exception e){
+            throw new RuntimeException(e);
         }
     }
 
@@ -225,5 +229,20 @@ public class EditorPanel extends VBox {
     }
     public static EditorPanel getPanel(){
         return panel;
+    }
+    public void setLevelName(String name){
+        levelName.setText(name);
+    }
+    public void loadOverTiles(File file) throws IOException, ClassNotFoundException {
+        ArrayList<OverTile> arrayList = new ArrayList<>();
+        ObjectInputStream oot1 = new ObjectInputStream(new FileInputStream(file));
+        OverTile[][] overTiles = (OverTile[][]) oot1.readObject();
+        for(OverTile[] tiles : overTiles){
+            for (OverTile tile : tiles){
+                if (!arrayList.contains(tile) && tile!=null) arrayList.add(tile);
+            }
+        }
+        this.overTileSet = arrayList;
+        paintOverTileSet();
     }
 }

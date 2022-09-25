@@ -72,7 +72,6 @@ public class LevelEditorScene extends ScrollPane {
             double yIndex = Math.floor(y / (tileSize * ratio));
             if (newTile.getClass()==Tile.class) level.getTiles()[(int) xIndex][(int) yIndex] = (Tile) newTile;
             if (OverTile.class.isAssignableFrom(newTile.getClass())) {
-                System.out.println("ok");
                 level.getOverTiles()[(int) xIndex][(int) yIndex] = (OverTile) newTile;
             }
         }catch (Exception e){
