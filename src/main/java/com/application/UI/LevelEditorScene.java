@@ -11,7 +11,6 @@ import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.paint.Color;
 
-
 public class LevelEditorScene extends ScrollPane {
     static LevelEditorScene levelEditorScene;
     protected Canvas canvas;

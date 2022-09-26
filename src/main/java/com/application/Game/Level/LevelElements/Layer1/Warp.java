@@ -1,6 +1,5 @@
 package com.application.Game.Level.LevelElements.Layer1;
 
-
 public class Warp extends OverTile {
     private final String exit;
     private final int xDes;

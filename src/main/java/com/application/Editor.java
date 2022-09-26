@@ -8,16 +8,14 @@ import com.application.UI.Saver;
 import javafx.application.Application;
 import javafx.geometry.Orientation;
 import javafx.scene.Scene;
-import javafx.scene.control.Menu;
-import javafx.scene.control.MenuBar;
-import javafx.scene.control.MenuItem;
-import javafx.scene.control.SplitPane;
+import javafx.scene.control.*;
 import javafx.scene.layout.BorderPane;
 import javafx.stage.FileChooser;
 import javafx.stage.Screen;
 import javafx.stage.Stage;
 
 import java.io.File;
+import java.util.Optional;
 
 public class Editor extends Application {
     SplitPane splitPane;
@@ -31,8 +29,18 @@ public class Editor extends Application {
         Graphic_Const.DEFAULT_WIDTH = Screen.getPrimary().getBounds().getWidth()-borderXSize;
         Graphic_Const.DEFAULT_HEIGHT = Screen.getPrimary().getBounds().getHeight()-borderYSize;
 
-
-        theStage.setOnCloseRequest(e->{});
+        theStage.setOnCloseRequest(event -> {
+            //your code goes here
+            Alert confirm = new Alert(Alert.AlertType.CONFIRMATION);
+            ButtonType yes = new ButtonType("YES");
+            ButtonType no = new ButtonType("no");
+            confirm.setTitle("Are you sure ?");
+            confirm.setHeaderText("if you leave now some of your progress might be lost");
+            confirm.getButtonTypes().setAll(yes,no);
+            Optional<ButtonType> ans = confirm.showAndWait();
+            assert ans.isPresent();
+            if (!ans.get().equals(yes)) event.consume();
+        });
         EditorPanel panel = EditorPanel.getPanel(theStage);
         LevelEditorScene level = LevelEditorScene.getLevelEditorScene();
 
