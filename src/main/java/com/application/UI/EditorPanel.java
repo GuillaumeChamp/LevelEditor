@@ -39,11 +39,11 @@ public class EditorPanel extends VBox {
     TileTyped selectedTile;
     Button addTP = new Button("add TP");
     TextField levelName = new TextField("untitled");
-    @SuppressWarnings("getWithoutCheck")
-    private EditorPanel(Stage stage,double width,double height) {
+
+    private EditorPanel(Stage stage) {
         //Sizing
-        this.setWidth(width);
-        this.setHeight(height);
+        this.setWidth(Graphic_Const.DEFAULT_WIDTH);
+        this.setHeight(Graphic_Const.DEFAULT_HEIGHT);
         //Creating component
         TextField widthField = new TextField("200");
         TextField heightField = new TextField("200");
@@ -79,12 +79,12 @@ public class EditorPanel extends VBox {
         showCalc.setSelected(true);
         showCalc.setOnAction(e->{
             Graphic_Const.SHOW_CALC =showCalc.isSelected();
-            LevelEditorScene.getLevelEditorScene(0,0).paint();
+            LevelEditorScene.getLevelEditorScene().paint();
         });
         showGrid.setSelected(true);
         showGrid.setOnAction(e->{
             Graphic_Const.SHOW_GRID = showGrid.isSelected();
-            LevelEditorScene.getLevelEditorScene(0,0).paint();
+            LevelEditorScene.getLevelEditorScene().paint();
         });
         canvasOverTile.setOnMouseClicked(e->{
             double x = e.getX();
@@ -110,15 +110,15 @@ public class EditorPanel extends VBox {
         heightField.setText("200");
         widthField.setOnKeyPressed(e->{
             if (e.getCode().equals(KeyCode.ENTER)) {
-                LevelEditorScene.getLevelEditorScene(0,0).changeSize(Integer.parseInt(widthField.getText()),Integer.parseInt(heightField.getText()));
+                LevelEditorScene.getLevelEditorScene().changeSize(Integer.parseInt(widthField.getText()),Integer.parseInt(heightField.getText()));
             }
         });
         heightField.setOnKeyPressed(e->{
             if (e.getCode().equals(KeyCode.ENTER)) {
-                LevelEditorScene.getLevelEditorScene(0,0).changeSize(Integer.parseInt(widthField.getText()),Integer.parseInt(heightField.getText()));
+                LevelEditorScene.getLevelEditorScene().changeSize(Integer.parseInt(widthField.getText()),Integer.parseInt(heightField.getText()));
             }
         });
-        levelName.setOnKeyPressed(e-> LevelEditorScene.getLevelEditorScene(0,0).rename(levelName.getText()));
+        levelName.setOnKeyPressed(e-> LevelEditorScene.getLevelEditorScene().rename(levelName.getText()));
         picker.setOnAction(e->{
             File file = load.showOpenDialog(stage);
             createTileSet(file);
@@ -250,8 +250,8 @@ public class EditorPanel extends VBox {
         return tileSet.get(index);
     }
 
-    public static EditorPanel getPanel(Stage stage,double width,double height) {
-        if (panel==null) panel=new EditorPanel(stage,width,height);
+    public static EditorPanel getPanel(Stage stage) {
+        if (panel==null) panel=new EditorPanel(stage);
         return panel;
     }
     public static EditorPanel getPanel(){

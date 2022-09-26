@@ -17,9 +17,9 @@ public class LevelEditorScene extends ScrollPane {
     protected Canvas canvas;
     private Level level;
 
-    private LevelEditorScene(double width, double height) {
-        this.setWidth(width);
-        this.setHeight(height);
+    private LevelEditorScene() {
+        this.setWidth(Graphic_Const.DEFAULT_WIDTH);
+        this.setHeight(Graphic_Const.DEFAULT_HEIGHT);
         level = new Level(160,160);
         this.canvas = new Canvas(this.getWidth(),this.getHeight());
         canvas.setOnMouseClicked(e->{
@@ -35,8 +35,8 @@ public class LevelEditorScene extends ScrollPane {
         paint();
     }
 
-    public static LevelEditorScene getLevelEditorScene(double width,double height) {
-        if (levelEditorScene==null) levelEditorScene=new LevelEditorScene(width, height);
+    public static LevelEditorScene getLevelEditorScene() {
+        if (levelEditorScene==null) levelEditorScene=new LevelEditorScene();
         return levelEditorScene;
     }
 

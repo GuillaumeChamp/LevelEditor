@@ -2,6 +2,7 @@ package com.application;
 
 import com.application.Game.Level.Level;
 import com.application.UI.EditorPanel;
+import com.application.UI.Graphic_Const;
 import com.application.UI.LevelEditorScene;
 import com.application.UI.Saver;
 import javafx.application.Application;
@@ -27,13 +28,13 @@ public class Editor extends Application {
         int borderXSize = 0;
         int borderYSize = 70;
 
-        final double defaultWidth = Screen.getPrimary().getBounds().getWidth()-borderXSize;
-        final double defaultHeight = Screen.getPrimary().getBounds().getHeight()-borderYSize;
+        Graphic_Const.DEFAULT_WIDTH = Screen.getPrimary().getBounds().getWidth()-borderXSize;
+        Graphic_Const.DEFAULT_HEIGHT = Screen.getPrimary().getBounds().getHeight()-borderYSize;
 
 
         theStage.setOnCloseRequest(e->{});
-        EditorPanel panel = EditorPanel.getPanel(theStage,defaultWidth,defaultHeight);
-        LevelEditorScene level = LevelEditorScene.getLevelEditorScene(defaultWidth,defaultHeight);
+        EditorPanel panel = EditorPanel.getPanel(theStage);
+        LevelEditorScene level = LevelEditorScene.getLevelEditorScene();
 
         splitPane = new SplitPane(panel,level);
         splitPane.setOrientation(Orientation.HORIZONTAL);
@@ -73,7 +74,7 @@ public class Editor extends Application {
         menuBar.getMenus().add(edit);
         borderPane.setTop(menuBar);
 
-        Scene scene = new Scene(borderPane, defaultWidth, defaultHeight);
+        Scene scene = new Scene(borderPane, Graphic_Const.DEFAULT_WIDTH, Graphic_Const.DEFAULT_HEIGHT);
         theStage.setScene(scene);
         theStage.show();
     }
