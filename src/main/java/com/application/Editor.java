@@ -38,7 +38,7 @@ public class Editor extends Application {
         splitPane = new SplitPane(panel,level);
         splitPane.setOrientation(Orientation.HORIZONTAL);
         theStage.showingProperty().addListener(e-> splitPane.setDividerPosition(0,0.4));
-        splitPane.getDividers().get(0).positionProperty().addListener(e-> panel.resizeOptions(splitPane.getDividers().get(0).getPosition()*theStage.getWidth(),theStage.getHeight()));
+        splitPane.getDividers().get(0).positionProperty().addListener(e-> panel.resizeOptions(splitPane.getDividers().get(0).getPosition()*theStage.getWidth()));
 
         // place splitPane as center
         BorderPane borderPane = new BorderPane(splitPane);

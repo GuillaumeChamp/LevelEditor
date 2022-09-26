@@ -21,7 +21,6 @@ import javafx.stage.Stage;
 import javafx.util.converter.NumberStringConverter;
 
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.nio.file.Files;
@@ -40,7 +39,7 @@ public class EditorPanel extends VBox {
     TileTyped selectedTile;
     Button addTP = new Button("add TP");
     TextField levelName = new TextField("untitled");
-
+    @SuppressWarnings("getWithoutCheck")
     private EditorPanel(Stage stage,double width,double height) {
         //Sizing
         this.setWidth(width);
@@ -89,6 +88,7 @@ public class EditorPanel extends VBox {
         addTP.setOnAction(e->{
             PopUpTP popUpTP = new PopUpTP();
             Optional<ButtonType> ans = popUpTP.showAndWait();
+            assert ans.isPresent();
             if (ans.get().getText().equals("confirm"))
                 overTileSet.add(popUpTP.getTP());
             paintOverTileSet();
@@ -111,7 +111,7 @@ public class EditorPanel extends VBox {
             createTileSet(file);
         });
         //Adding elements
-        this.getChildren().add(new HBox(widthField,heightField));
+        this.getChildren().add(new VBox(new Label("level dimension"),new HBox(widthField,heightField)));
         this.getChildren().add(new VBox(new Label("level Name"),levelName));
         this.getChildren().add(new Label("main.java.com.application.Editor"));
         this.getChildren().add(picker);
@@ -136,7 +136,7 @@ public class EditorPanel extends VBox {
     }
 
 
-    public void resizeOptions(double width,double height){
+    public void resizeOptions(double width){
         tilePane.setMaxWidth(width);
         if (!tileSet.isEmpty()) paintTileSet();
         if (!overTileSet.isEmpty()) paintOverTileSet();
@@ -208,7 +208,7 @@ public class EditorPanel extends VBox {
             if(t.getClass()== Warp.class) gc.setFill(Color.color(0.5,0.5,0.5,0.3));
             if (t.getClass()==Encounter.class) gc.setFill(Color.color(0.8,0,0,0.3));
             gc.strokeRect(x*ratio,y*ratio,tileSize*ratio,tileSize*ratio);
-            gc.fillText(String.valueOf(t.getId()),(x+tileSize/2)*ratio,(y+tileSize/2)*ratio);
+            gc.fillText(String.valueOf(t.getId()),(x+tileSize/2.0)*ratio,(y+tileSize/2.0)*ratio);
             gc.fillRect(x*ratio,y*ratio,tileSize*ratio,tileSize*ratio);
             x = x+tileSize;
             if (x>=xMax){
@@ -248,7 +248,7 @@ public class EditorPanel extends VBox {
         levelName.setText(name);
     }
     public void loadOverTiles(File file) throws IOException, ClassNotFoundException {
-        ArrayList<OverTile> arrayList = new ArrayList<>();
+        ArrayList<OverTile> arrayList = overTileSet;
         ObjectInputStream oot1 = new ObjectInputStream(Files.newInputStream(file.toPath()));
         OverTile[][] overTiles = (OverTile[][]) oot1.readObject();
         for(OverTile[] tiles : overTiles){
@@ -256,7 +256,6 @@ public class EditorPanel extends VBox {
                 if (!arrayList.contains(tile) && tile!=null) arrayList.add(tile);
             }
         }
-        this.overTileSet = arrayList;
         paintOverTileSet();
     }
 }

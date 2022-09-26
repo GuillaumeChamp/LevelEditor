@@ -65,7 +65,7 @@ public class LevelEditorScene extends ScrollPane {
                     double y = j*tileSize;
                     gc.fillRect( x * ratio, y * ratio, tileSize * ratio, tileSize * ratio);
                     gc.setFill(Color.color(1,0,0,1));
-                    gc.fillText(String.valueOf(overTiles[i][j].getId()),(x+tileSize/2)*ratio,(y+tileSize/2)*ratio);
+                    gc.fillText(String.valueOf(overTiles[i][j].getId()),(x+tileSize/2.0)*ratio,(y+tileSize/2.0)*ratio);
                 }
                 gc.strokeRect(i * tileSize * ratio, j * tileSize * ratio, tileSize * ratio, tileSize * ratio);
             }
