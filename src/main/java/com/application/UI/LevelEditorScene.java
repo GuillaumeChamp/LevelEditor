@@ -58,7 +58,7 @@ public class LevelEditorScene extends ScrollPane {
                 if (tiles[i][j]!=null) {
                     gc.drawImage(tiles[i][j].getSkin(), i * tileSize * ratio, j * tileSize * ratio, tileSize * ratio, tileSize * ratio);
                 }
-                if (overTiles[i][j]!= null){
+                if (overTiles[i][j]!= null && Graphic_Const.SHOW_CALC){
                     if(overTiles[i][j].getClass()== Warp.class) gc.setFill(Color.color(0.5,0.5,0.5,0.3));
                     if (overTiles[i][j].getClass()== Encounter.class) gc.setFill(Color.color(0.8,0,0,0.3));
                     double x = i*tileSize;
@@ -67,7 +67,7 @@ public class LevelEditorScene extends ScrollPane {
                     gc.setFill(Color.color(1,0,0,1));
                     gc.fillText(String.valueOf(overTiles[i][j].getId()),(x+tileSize/2.0)*ratio,(y+tileSize/2.0)*ratio);
                 }
-                gc.strokeRect(i * tileSize * ratio, j * tileSize * ratio, tileSize * ratio, tileSize * ratio);
+                if (Graphic_Const.SHOW_GRID) gc.strokeRect(i * tileSize * ratio, j * tileSize * ratio, tileSize * ratio, tileSize * ratio);
             }
         }
     }

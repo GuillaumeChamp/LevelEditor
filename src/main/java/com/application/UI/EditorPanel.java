@@ -48,6 +48,8 @@ public class EditorPanel extends VBox {
         TextField widthField = new TextField("200");
         TextField heightField = new TextField("200");
         FileChooser load =new FileChooser();
+        CheckBox showCalc = new CheckBox("show calc");
+        CheckBox showGrid = new CheckBox("show grid");
         Button picker =new Button("Import TileSet");
         canvasTile = new Canvas(this.getWidth(),this.getWidth());
         canvasOverTile =  new Canvas(this.getWidth(),this.getWidth());
@@ -55,6 +57,7 @@ public class EditorPanel extends VBox {
         tilePane.resize(this.getWidth(),this.getWidth());
         overTilePane = new ScrollPane(canvasOverTile);
         overTilePane.resize(this.getWidth(),this.getWidth());
+
         //Adding behaviour
         widthField.setTextFormatter(new TextFormatter<>(new NumberStringConverter()));
         heightField.setTextFormatter(new TextFormatter<>(new NumberStringConverter()));
@@ -72,6 +75,16 @@ public class EditorPanel extends VBox {
             }
             paintTileSet();
             paintOverTileSet();
+        });
+        showCalc.setSelected(true);
+        showCalc.setOnAction(e->{
+            Graphic_Const.SHOW_CALC =showCalc.isSelected();
+            LevelEditorScene.getLevelEditorScene(0,0).paint();
+        });
+        showGrid.setSelected(true);
+        showGrid.setOnAction(e->{
+            Graphic_Const.SHOW_GRID = showGrid.isSelected();
+            LevelEditorScene.getLevelEditorScene(0,0).paint();
         });
         canvasOverTile.setOnMouseClicked(e->{
             double x = e.getX();
@@ -113,7 +126,7 @@ public class EditorPanel extends VBox {
         //Adding elements
         this.getChildren().add(new VBox(new Label("level dimension"),new HBox(widthField,heightField)));
         this.getChildren().add(new VBox(new Label("level Name"),levelName));
-        this.getChildren().add(new Label("main.java.com.application.Editor"));
+        this.getChildren().add(new HBox(showCalc,showGrid));
         this.getChildren().add(picker);
         this.getChildren().add(tilePane);
         this.getChildren().add(addTP);
