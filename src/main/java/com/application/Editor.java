@@ -22,7 +22,7 @@ public class Editor extends Application {
     SplitPane splitPane;
     public void start(Stage theStage) {
 
-        theStage.setTitle("Level main.java.com.application.Editor");
+        theStage.setTitle("Level Editor");
 
         int borderXSize = 0;
         int borderYSize = 70;

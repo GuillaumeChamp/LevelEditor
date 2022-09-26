@@ -27,7 +27,7 @@ public class Level {
         Tile[][] newTiles = new Tile[x][y];
         OverTile[][] newOverTiles = new OverTile[x][y];
         int lineToCopy = Math.min(x,tiles.length);
-        int columnToCopy = Math.min(x,tiles[0].length);
+        int columnToCopy = Math.min(y,tiles[0].length);
         Tile.initTiles(newTiles);
 
         for (int i = 0; i < lineToCopy; i++) {

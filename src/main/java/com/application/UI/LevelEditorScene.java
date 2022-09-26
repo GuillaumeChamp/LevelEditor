@@ -2,7 +2,9 @@ package com.application.UI;
 
 import com.application.Game.Level.Level;
 import com.application.Game.Level.LevelElements.Layer0.Tile;
+import com.application.Game.Level.LevelElements.Layer1.Encounter;
 import com.application.Game.Level.LevelElements.Layer1.OverTile;
+import com.application.Game.Level.LevelElements.Layer1.Warp;
 import com.application.Game.Level.LevelElements.TileTyped;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
@@ -57,8 +59,13 @@ public class LevelEditorScene extends ScrollPane {
                     gc.drawImage(tiles[i][j].getSkin(), i * tileSize * ratio, j * tileSize * ratio, tileSize * ratio, tileSize * ratio);
                 }
                 if (overTiles[i][j]!= null){
-                    gc.setFill(Color.color(0.5,0.5,0.5,0.5));
-                    gc.fillRect( i * tileSize * ratio, j * tileSize * ratio, tileSize * ratio, tileSize * ratio);
+                    if(overTiles[i][j].getClass()== Warp.class) gc.setFill(Color.color(0.5,0.5,0.5,0.3));
+                    if (overTiles[i][j].getClass()== Encounter.class) gc.setFill(Color.color(0.8,0,0,0.3));
+                    double x = i*tileSize;
+                    double y = j*tileSize;
+                    gc.fillRect( x * ratio, y * ratio, tileSize * ratio, tileSize * ratio);
+                    gc.setFill(Color.color(1,0,0,1));
+                    gc.fillText(String.valueOf(overTiles[i][j].getId()),(x+tileSize/2)*ratio,(y+tileSize/2)*ratio);
                 }
                 gc.strokeRect(i * tileSize * ratio, j * tileSize * ratio, tileSize * ratio, tileSize * ratio);
             }

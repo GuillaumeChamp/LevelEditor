@@ -6,4 +6,8 @@ import java.io.Serializable;
 
 public class OverTile implements TileTyped, Serializable {
     protected int id;
+
+    public int getId() {
+        return id;
+    }
 }

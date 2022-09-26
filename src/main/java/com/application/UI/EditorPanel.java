@@ -1,7 +1,9 @@
 package com.application.UI;
 
 import com.application.Game.Level.LevelElements.Layer0.Tile;
+import com.application.Game.Level.LevelElements.Layer1.Encounter;
 import com.application.Game.Level.LevelElements.Layer1.OverTile;
+import com.application.Game.Level.LevelElements.Layer1.Warp;
 import com.application.Game.Level.LevelElements.TileTyped;
 import com.application.UI.Elements.PopUpTP;
 import javafx.scene.canvas.Canvas;
@@ -22,6 +24,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
+import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.Optional;
 
@@ -58,6 +61,7 @@ public class EditorPanel extends VBox {
         heightField.setTextFormatter(new TextFormatter<>(new NumberStringConverter()));
         tilePane.setHbarPolicy(ScrollPane.ScrollBarPolicy.NEVER);
         overTilePane.setHbarPolicy(ScrollPane.ScrollBarPolicy.NEVER);
+        buildEncounter();
         canvasTile.setOnMouseClicked(e->{
             double x = e.getX();
             double y = e.getY();
@@ -114,6 +118,13 @@ public class EditorPanel extends VBox {
         this.getChildren().add(tilePane);
         this.getChildren().add(addTP);
         this.getChildren().add(overTilePane);
+    }
+
+    private void buildEncounter() {
+        for (int i = 1; i < 10; i++) {
+            overTileSet.add(new Encounter(i));
+        }
+        paintOverTileSet();
     }
 
     private TileTyped getOverTileAt(double x, double y) throws IndexOutOfBoundsException {
@@ -191,10 +202,13 @@ public class EditorPanel extends VBox {
         double xMax = (tilesPerLine)*tileSize;
         gc.setStroke(Color.BLACK);
         gc.setLineWidth(2);
-        gc.setFill(Color.color(0.5,0.5,0.5,0.5));
+
         for (OverTile t: overTileSet) {
             if (t==null) return;
+            if(t.getClass()== Warp.class) gc.setFill(Color.color(0.5,0.5,0.5,0.3));
+            if (t.getClass()==Encounter.class) gc.setFill(Color.color(0.8,0,0,0.3));
             gc.strokeRect(x*ratio,y*ratio,tileSize*ratio,tileSize*ratio);
+            gc.fillText(String.valueOf(t.getId()),(x+tileSize/2)*ratio,(y+tileSize/2)*ratio);
             gc.fillRect(x*ratio,y*ratio,tileSize*ratio,tileSize*ratio);
             x = x+tileSize;
             if (x>=xMax){
@@ -235,7 +249,7 @@ public class EditorPanel extends VBox {
     }
     public void loadOverTiles(File file) throws IOException, ClassNotFoundException {
         ArrayList<OverTile> arrayList = new ArrayList<>();
-        ObjectInputStream oot1 = new ObjectInputStream(new FileInputStream(file));
+        ObjectInputStream oot1 = new ObjectInputStream(Files.newInputStream(file.toPath()));
         OverTile[][] overTiles = (OverTile[][]) oot1.readObject();
         for(OverTile[] tiles : overTiles){
             for (OverTile tile : tiles){
