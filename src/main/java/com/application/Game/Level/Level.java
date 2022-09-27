@@ -9,20 +9,22 @@ public class Level {
     private Tile[][] tiles;
     private OverTile[][] overTiles;
 
-
+    /**
+     * Create a level with the determinate size
+     * @param hTile number of column
+     * @param vTile number of row
+     */
     public Level(int hTile, int vTile){
         tiles = new Tile[hTile][vTile];
         overTiles = new OverTile[hTile][vTile];
+        Tile.initTiles(tiles);
     }
 
-    public void setOverTiles(OverTile[][] overTiles) {
-        this.overTiles = overTiles;
-    }
-
-    public Tile[][] getTiles() {
-        return tiles;
-    }
-
+    /**
+     * Change the level size copping older tiles and overTiles
+     * @param x new width
+     * @param y new height
+     */
     public void changeSize(int x,int y){
         Tile[][] newTiles = new Tile[x][y];
         OverTile[][] newOverTiles = new OverTile[x][y];
@@ -41,12 +43,17 @@ public class Level {
     public void setName(String name) {
         this.name = name;
     }
+    public void setOverTiles(OverTile[][] overTiles) {
+        this.overTiles = overTiles;
+    }
 
     public String getName() {
         return name;
     }
-
     public OverTile[][] getOverTiles() {
         return overTiles;
+    }
+    public Tile[][] getTiles() {
+        return tiles;
     }
 }

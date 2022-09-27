@@ -1,23 +1,30 @@
-package com.application.UI;
+package com.application.Game.Level;
 
-import com.application.Game.Level.Level;
 import com.application.Game.Level.LevelElements.Layer0.Tile;
 import com.application.Game.Level.LevelElements.Layer1.OverTile;
+import com.application.UI.Graphic_Const;
 import javafx.embed.swing.SwingFXUtils;
 import javafx.scene.image.Image;
 import javafx.scene.image.PixelReader;
 import javafx.scene.image.PixelWriter;
 import javafx.scene.image.WritableImage;
+
 import javax.imageio.ImageIO;
 import java.io.*;
 import java.nio.file.Files;
-import java.nio.file.Paths;
 import java.util.ArrayList;
 
 public class Saver {
     final static String rep = "."+File.separator+"saved"+File.separator;
     final static String extension0 = ".level0";
     final static String extension1 = ".level1";
+    final static String extensionImage = ".png";
+
+    /**
+     * Use to select all texture to save keeping only usefully textures
+     * @param tiles the whole tile set
+     * @return reduced tiles set in an array list
+     */
     private static ArrayList<Tile> selectTiles(Tile[][] tiles){
         ArrayList<Tile> selected = new ArrayList<>();
         for (Tile[] tile : tiles) {
@@ -27,11 +34,19 @@ public class Saver {
         }
         return selected;
     }
-    @SuppressWarnings("All")
+
+    /**
+     * Save tiles
+     * @param tiles all tiles
+     * @param levelName name of the output file
+     * @return minimal list of tiles
+     * @throws IOException file security or write issues
+     */
+    @SuppressWarnings("ResultOfMethodCallIgnored")
     private static ArrayList<Tile> saveTile(Tile[][] tiles,String levelName) throws IOException {
         int tileSize = Graphic_Const.TILES_SIZE;
         ArrayList<Tile> toSave = selectTiles(tiles);
-        File file = new File(rep+levelName+".png");
+        File file = new File(rep+levelName+extensionImage);
         file.mkdirs();
         file.createNewFile();
         WritableImage image = new WritableImage(toSave.size()* tileSize,tileSize);
@@ -44,8 +59,16 @@ public class Saver {
         ImageIO.write(SwingFXUtils.fromFXImage(image, null), "png", file);
         return toSave;
     }
-    @SuppressWarnings("All")
+
+    /**
+     * Save the whole level (including tiles, overTiles and tile's skin)
+     * @param level level to save
+     * @throws Exception file and files stream exceptions
+     * produce three files in the app repository
+     */
+    @SuppressWarnings("ResultOfMethodCallIgnored")
     public static void saveLevel(Level level) throws Exception{
+        //TODO path selector
         Tile[][] tiles = level.getTiles();
         OverTile[][] overTiles = level.getOverTiles();
         String name = level.getName();
@@ -56,21 +79,30 @@ public class Saver {
                 tilesIndex[i][j] = toSave.indexOf(tiles[i][j]);
         File file = new File(rep+name+extension0);
         file.createNewFile();
-        ObjectOutputStream oot = new ObjectOutputStream(new FileOutputStream(file));
+        ObjectOutputStream oot = new ObjectOutputStream(Files.newOutputStream(file.toPath()));
         oot.writeObject(tilesIndex);
         oot.flush();
         oot.close();
 
         File file1 = new File(rep+name+extension1);
         file1.createNewFile();
-        ObjectOutputStream oot1 = new ObjectOutputStream(new FileOutputStream(file1));
+        ObjectOutputStream oot1 = new ObjectOutputStream(Files.newOutputStream(file1.toPath()));
         oot1.writeObject(overTiles);
         oot1.flush();
         oot1.close();
     }
+
+    /**
+     * Load a level from file
+     * @param levelFile can be .level0 ,.level1 or .png
+     * @return the loaded level
+     * @throws Exception if one of the three files is missing
+     */
     public static Level loadLevel(File levelFile) throws Exception{
-        ObjectInputStream oot = new ObjectInputStream(Files.newInputStream(levelFile.toPath()));
-        ObjectInputStream oot1 = new ObjectInputStream(Files.newInputStream(Paths.get(levelFile.getPath().replace(extension0, extension1))));
+        String name = levelFile.getName().replace(extension0,"");
+        String path = levelFile.getAbsolutePath().replace(levelFile.getName(),"");
+        ObjectInputStream oot = new ObjectInputStream(Files.newInputStream(new File(path + name + extension0).toPath()));
+        ObjectInputStream oot1 = new ObjectInputStream(Files.newInputStream(new File(path + name + extension1).toPath()));
         int[][] tilesIndex = (int[][]) oot.readObject();
         OverTile[][] overTiles = (OverTile[][]) oot1.readObject();
         oot.close();
@@ -81,11 +113,9 @@ public class Saver {
 
         Level level = new Level(height,width);
 
-        String name = levelFile.getName();
-        name = name.replace(extension0,"");
         level.setName(name);
-        String texturePath = levelFile.toURI().toString().replace(extension0,".png");
-        Image image = new Image(texturePath);
+        String texturePath = path+name+extensionImage;
+        Image image = new Image(new File(texturePath).toURI().toString());
         PixelReader reader = image.getPixelReader();
         ArrayList<Tile> SavedTile = new ArrayList<>();
         level.setOverTiles(overTiles);

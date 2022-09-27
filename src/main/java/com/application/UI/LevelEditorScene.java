@@ -7,6 +7,7 @@ import com.application.Game.Level.LevelElements.Layer1.Encounter;
 import com.application.Game.Level.LevelElements.Layer1.OverTile;
 import com.application.Game.Level.LevelElements.Layer1.Warp;
 import com.application.Game.Level.LevelElements.TileTyped;
+import com.application.Game.Level.Saver;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.control.ScrollPane;
@@ -23,15 +24,13 @@ public class LevelEditorScene extends ScrollPane {
         level = new Level(160,160);
         this.canvas = new Canvas(this.getWidth(),this.getHeight());
         canvas.setOnMouseClicked(e->{
-
             double x = e.getX();
             double y = e.getY();
-            if (EditorPanel.getPanel().selectedTile==null) return;
+            if (EditorPanel.getPanel().getSelectedTile() ==null) return;
             modifyTileAt(x,y,EditorPanel.getPanel().getSelectedTile());
             paint();
         });
         this.setContent(canvas);
-        Tile.initTiles(level.getTiles());
         paint();
     }
 
@@ -42,7 +41,6 @@ public class LevelEditorScene extends ScrollPane {
 
     public void newLevelRequest() {
         this.level = new Level(level.getTiles().length,level.getTiles()[0].length);
-        Tile.initTiles(level.getTiles());
         paint();
     }
 

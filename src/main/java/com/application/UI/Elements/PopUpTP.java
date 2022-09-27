@@ -12,6 +12,9 @@ public class PopUpTP extends Alert {
     ButtonType confirm = new ButtonType("confirm");
     ButtonType cancel = new ButtonType("cancel", ButtonBar.ButtonData.CANCEL_CLOSE);
 
+    /**
+     * Unique constructor implementing the behaviour
+     */
     public PopUpTP(){
         super(AlertType.CONFIRMATION);
         VBox root = new VBox();
@@ -25,8 +28,13 @@ public class PopUpTP extends Alert {
         this.getButtonTypes().setAll(confirm,cancel);
     }
 
+    /**
+     * parse and get
+     * @return return a warp by reading the fields
+     */
     public Warp getTP(){
         this.hide();
+        this.close();
         return new Warp(levelName.getText(),Integer.parseInt(xField.getText()),Integer.parseInt(yField.getText()));
     }
 }

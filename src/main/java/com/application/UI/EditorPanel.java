@@ -28,18 +28,16 @@ import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.Optional;
 
-
 public class EditorPanel extends VBox {
-    static EditorPanel panel;
-    ScrollPane tilePane;
-    ScrollPane overTilePane;
-    Canvas canvasTile;
-    Canvas canvasOverTile;
-    ArrayList<Tile> tileSet =new ArrayList<>();
-    ArrayList<OverTile> overTileSet =new ArrayList<>();
-    TileTyped selectedTile;
-    Button addTP = new Button("add TP");
-    TextField levelName = new TextField("untitled");
+    private static EditorPanel panel;
+    private final ScrollPane tilePane;
+    private final ScrollPane overTilePane;
+    private final Canvas canvasTile;
+    private final Canvas canvasOverTile;
+    private final ArrayList<Tile> tileSet =new ArrayList<>();
+    private final ArrayList<OverTile> overTileSet =new ArrayList<>();
+    private TileTyped selectedTile;
+    private final TextField levelName = new TextField("untitled");
 
     private EditorPanel(Stage stage) {
         //Sizing
@@ -99,6 +97,7 @@ public class EditorPanel extends VBox {
             paintOverTileSet();
             paintTileSet();
         });
+        Button addTP = new Button("add TP");
         addTP.setOnAction(e->{
             PopUpTP popUpTP = new PopUpTP();
             Optional<ButtonType> ans = popUpTP.showAndWait();
@@ -149,7 +148,6 @@ public class EditorPanel extends VBox {
         int index = (int) (Math.floor(y/(ratio*tileSize))*tilesPerLine+Math.floor(x/(tileSize*ratio)));
         return overTileSet.get(index);
     }
-
 
     public void resizeOptions(double width){
         tilePane.setMaxWidth(width);

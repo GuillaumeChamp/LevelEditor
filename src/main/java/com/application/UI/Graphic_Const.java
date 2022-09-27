@@ -1,5 +1,8 @@
 package com.application.UI;
 
+/**
+ * All parameters
+ */
 public class Graphic_Const {
     public static int TILES_SIZE =16;
     public static double DEFAULT_WIDTH;
