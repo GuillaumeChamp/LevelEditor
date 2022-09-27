@@ -35,7 +35,7 @@ public class Editor extends Application {
             ButtonType yes = new ButtonType("YES");
             ButtonType no = new ButtonType("no");
             confirm.setTitle("Are you sure ?");
-            confirm.setHeaderText("if you leave now some of your progress might be lost");
+            confirm.setHeaderText("If you leave now some of your progress might be lost");
             confirm.getButtonTypes().setAll(yes,no);
             Optional<ButtonType> ans = confirm.showAndWait();
             assert ans.isPresent();

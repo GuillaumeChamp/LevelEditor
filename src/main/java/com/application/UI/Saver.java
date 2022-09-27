@@ -10,6 +10,8 @@ import javafx.scene.image.PixelWriter;
 import javafx.scene.image.WritableImage;
 import javax.imageio.ImageIO;
 import java.io.*;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 
 public class Saver {
@@ -67,8 +69,8 @@ public class Saver {
         oot1.close();
     }
     public static Level loadLevel(File levelFile) throws Exception{
-        ObjectInputStream oot = new ObjectInputStream(new FileInputStream(levelFile));
-        ObjectInputStream oot1 = new ObjectInputStream(new FileInputStream(levelFile.getPath().replace(extension0,extension1)));
+        ObjectInputStream oot = new ObjectInputStream(Files.newInputStream(levelFile.toPath()));
+        ObjectInputStream oot1 = new ObjectInputStream(Files.newInputStream(Paths.get(levelFile.getPath().replace(extension0, extension1))));
         int[][] tilesIndex = (int[][]) oot.readObject();
         OverTile[][] overTiles = (OverTile[][]) oot1.readObject();
         oot.close();
@@ -89,7 +91,7 @@ public class Saver {
         level.setOverTiles(overTiles);
         for (int j = 0; j < image.getWidth()/16; j++) {
             Image tileSkin = new WritableImage(reader, tileSize*j, 0, tileSize, tileSize);
-            SavedTile.add(new Tile(tileSkin, false));
+            SavedTile.add(new Tile(tileSkin));
         }
         for(int i=0;i<height;i++)
             for(int j=0;j<width;j++)

@@ -9,6 +9,7 @@ public class Warp extends OverTile {
         this.exit = exit;
         this.xDes = xDes;
         this.yDes = yDes;
+        this.id=10;
     }
 
     @Override

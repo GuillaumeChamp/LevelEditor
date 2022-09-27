@@ -6,16 +6,13 @@ import javafx.scene.image.Image;
 
 public class Tile implements TileTyped {
     Image skin;
-    Boolean collision;
 
     public Tile() {
         skin= ImageHolder.getImage("Skin/player.png");
-        collision=true;
     }
 
-    public Tile(Image skin, Boolean collision) {
+    public Tile(Image skin) {
         this.skin = skin;
-        this.collision = collision;
     }
     public static void initTiles(Tile[][] tiles){
         Tile nullTile = new Tile();

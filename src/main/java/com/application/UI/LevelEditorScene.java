@@ -2,6 +2,7 @@ package com.application.UI;
 
 import com.application.Game.Level.Level;
 import com.application.Game.Level.LevelElements.Layer0.Tile;
+import com.application.Game.Level.LevelElements.Layer1.Collision;
 import com.application.Game.Level.LevelElements.Layer1.Encounter;
 import com.application.Game.Level.LevelElements.Layer1.OverTile;
 import com.application.Game.Level.LevelElements.Layer1.Warp;
@@ -60,6 +61,7 @@ public class LevelEditorScene extends ScrollPane {
                 if (overTiles[i][j]!= null && Graphic_Const.SHOW_CALC){
                     if(overTiles[i][j].getClass()== Warp.class) gc.setFill(Color.color(0.5,0.5,0.5,0.3));
                     if (overTiles[i][j].getClass()== Encounter.class) gc.setFill(Color.color(0.8,0,0,0.3));
+                    if (overTiles[i][j].getClass()== Collision.class) gc.setFill(Color.color(0,0,0,0.8));
                     double x = i*tileSize;
                     double y = j*tileSize;
                     gc.fillRect( x * ratio, y * ratio, tileSize * ratio, tileSize * ratio);

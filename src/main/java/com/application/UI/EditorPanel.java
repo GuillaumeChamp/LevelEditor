@@ -1,6 +1,7 @@
 package com.application.UI;
 
 import com.application.Game.Level.LevelElements.Layer0.Tile;
+import com.application.Game.Level.LevelElements.Layer1.Collision;
 import com.application.Game.Level.LevelElements.Layer1.Encounter;
 import com.application.Game.Level.LevelElements.Layer1.OverTile;
 import com.application.Game.Level.LevelElements.Layer1.Warp;
@@ -134,9 +135,10 @@ public class EditorPanel extends VBox {
     }
 
     private void buildEncounter() {
-        for (int i = 1; i < 10; i++) {
+        for (int i = 0; i < 10; i++) {
             overTileSet.add(new Encounter(i));
         }
+        overTileSet.add(new Collision());
         paintOverTileSet();
     }
 
@@ -167,7 +169,7 @@ public class EditorPanel extends VBox {
             for (int j = 0; j < vTile; j++)
                 for (int i = 0; i < hTile; i++) {
                         Image tileSkin = new WritableImage(reader, tileSize * i, tileSize * j, tileSize, tileSize);
-                        tileSet.add(new Tile(tileSkin, false));
+                        tileSet.add(new Tile(tileSkin));
                     }
             paintTileSet();
         }catch (Exception e){
@@ -220,6 +222,7 @@ public class EditorPanel extends VBox {
             if (t==null) return;
             if(t.getClass()== Warp.class) gc.setFill(Color.color(0.5,0.5,0.5,0.3));
             if (t.getClass()==Encounter.class) gc.setFill(Color.color(0.8,0,0,0.3));
+            if (t.getClass()== Collision.class) gc.setFill(Color.color(0,0,0,0.8));
             gc.strokeRect(x*ratio,y*ratio,tileSize*ratio,tileSize*ratio);
             gc.fillText(String.valueOf(t.getId()),(x+tileSize/2.0)*ratio,(y+tileSize/2.0)*ratio);
             gc.fillRect(x*ratio,y*ratio,tileSize*ratio,tileSize*ratio);
