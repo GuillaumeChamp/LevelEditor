@@ -51,6 +51,41 @@ public class Editor extends Application {
 
         // place splitPane as center
         BorderPane borderPane = new BorderPane(splitPane);
+
+        borderPane.setTop(CreateMenu(theStage,level,panel));
+
+        Scene scene = new Scene(borderPane, Graphic_Const.DEFAULT_WIDTH, Graphic_Const.DEFAULT_HEIGHT);
+        theStage.setScene(scene);
+        theStage.show();
+    }
+
+    /**
+     * Load a level
+     * @param theStage current stage (to attach alert)
+     * @param level levelEditorScene (to attach the level)
+     * @param panel LevelEditorPanel (to change prompted information)
+     */
+    private void loadLevel(Stage theStage, LevelEditorScene level,EditorPanel panel){
+        try {
+            File file = new FileChooser().showOpenDialog(theStage);
+            Level level1 = Saver.loadLevel(file);
+            level.setLevel(level1);
+            panel.setLevelName(level1.getName());
+            panel.createTileSet(new File(file.getAbsolutePath().replace(".level0",".png")));
+            panel.loadOverTiles(new File(file.getAbsolutePath().replace(".level0", ".level1")));
+        } catch (Exception ex) {
+            throw new RuntimeException(ex);
+        }
+    }
+
+    /**
+     * Create the menu bar
+     * @param theStage current stage (to attach alert)
+     * @param level levelEditorScene (to attach the level)
+     * @param panel LevelEditorPanel (to change prompted information)
+     * @return the initialized menuBar
+     */
+    private MenuBar CreateMenu(Stage theStage,LevelEditorScene level,EditorPanel panel){
         MenuBar menuBar = new MenuBar();
         Menu edit = new Menu("File");
         MenuItem newLevel = new MenuItem("new level");
@@ -65,26 +100,11 @@ public class Editor extends Application {
             }
         });
         MenuItem load = new MenuItem("load");
-        load.setOnAction(e->{
-            try {
-                File file = new FileChooser().showOpenDialog(theStage);
-                Level level1 = Saver.loadLevel(file);
-                level.setLevel(level1);
-                panel.setLevelName(level1.getName());
-                panel.createTileSet(new File(file.getAbsolutePath().replace(".level0",".png")));
-                panel.loadOverTiles(new File(file.getAbsolutePath().replace(".level0", ".level1")));
-            } catch (Exception ex) {
-                throw new RuntimeException(ex);
-            }
-        });
+        load.setOnAction(e-> loadLevel(theStage,level,panel));
         edit.getItems().add(save);
         edit.getItems().add(load);
         menuBar.getMenus().add(edit);
-        borderPane.setTop(menuBar);
-
-        Scene scene = new Scene(borderPane, Graphic_Const.DEFAULT_WIDTH, Graphic_Const.DEFAULT_HEIGHT);
-        theStage.setScene(scene);
-        theStage.show();
+        return menuBar;
     }
 
     public static void main(String[] args) {

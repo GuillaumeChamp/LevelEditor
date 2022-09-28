@@ -18,6 +18,9 @@ public class LevelEditorScene extends ScrollPane {
     protected Canvas canvas;
     private Level level;
 
+    /**
+     * Private constructor
+     */
     private LevelEditorScene() {
         this.setWidth(Graphic_Const.DEFAULT_WIDTH);
         this.setHeight(Graphic_Const.DEFAULT_HEIGHT);
@@ -34,16 +37,26 @@ public class LevelEditorScene extends ScrollPane {
         paint();
     }
 
+    /**
+     * Singleton
+     * @return unique instance
+     */
     public static LevelEditorScene getLevelEditorScene() {
         if (levelEditorScene==null) levelEditorScene=new LevelEditorScene();
         return levelEditorScene;
     }
 
+    /**
+     * Create a new level and reset all tiles
+     */
     public void newLevelRequest() {
         this.level = new Level(level.getTiles().length,level.getTiles()[0].length);
         paint();
     }
 
+    /**
+     * Paint the level (tiles and overTiles)
+     */
     public void paint(){
         GraphicsContext gc = canvas.getGraphicsContext2D();
         gc.clearRect(0, 0, canvas.getWidth(), canvas.getHeight());
@@ -70,6 +83,13 @@ public class LevelEditorScene extends ScrollPane {
             }
         }
     }
+
+    /**
+     * Change the clicked tile
+     * @param x coordinate of the click on the canvas
+     * @param y coordinate of the click on the canvas
+     * @param newTile current tile
+     */
     public void modifyTileAt(double x, double y, TileTyped newTile){
         double ratio = Graphic_Const.ratio;
         int tileSize = Graphic_Const.TILES_SIZE;
@@ -84,17 +104,37 @@ public class LevelEditorScene extends ScrollPane {
             System.out.println("Miss Click");
         }
     }
+
+    /**
+     * Transitive call
+     * @param x new width
+     * @param y new height
+     */
     public void changeSize(int x,int y){
         level.changeSize(x,y);
         paint();
     }
+
+    /**
+     * Transitive call
+     * @throws Exception pass the exception
+     */
     public void saveLevel() throws Exception {
         Saver.saveLevel(level);
     }
+
+    /**
+     * Transitive call
+     * @param name new name
+     */
     public void rename(String name){
         level.setName(name);
     }
 
+    /**
+     * Use to load a saved level
+     * @param loadLevel new level already build
+     */
     public void setLevel(Level loadLevel) {
         this.level=loadLevel;
         paint();
