@@ -1,5 +1,6 @@
 package com.application.UI;
 
+import com.application.Game.Level.Level;
 import com.application.Game.Level.LevelElements.Layer0.Tile;
 import com.application.Game.Level.LevelElements.Layer1.Collision;
 import com.application.Game.Level.LevelElements.Layer1.Encounter;
@@ -38,6 +39,8 @@ public class EditorPanel extends VBox {
     private final ArrayList<OverTile> overTileSet =new ArrayList<>();
     private TileTyped selectedTile;
     private final TextField levelName= new TextField("levelName");
+    TextField widthField;
+    TextField heightField;
 
     /**
      * Singleton behaviour
@@ -116,8 +119,8 @@ public class EditorPanel extends VBox {
      * @return HBox with TextField on it
      */
     private HBox createTextField(){
-        TextField widthField = new TextField("200");
-        TextField heightField = new TextField("200");
+        widthField = new TextField("200");
+        heightField = new TextField("200");
         widthField.setTextFormatter(new TextFormatter<>(new NumberStringConverter()));
         heightField.setTextFormatter(new TextFormatter<>(new NumberStringConverter()));
         widthField.setText("200");
@@ -332,10 +335,12 @@ public class EditorPanel extends VBox {
 
     /**
      * Used during the loading process
-     * @param name name of the saved level that
+     * @param newLevel name of the saved level that
      */
-    public void setLevelName(String name){
-        levelName.setText(name);
+    public void updatePannel(Level newLevel){
+        levelName.setText(newLevel.getName());
+        widthField.setText(String.valueOf(newLevel.getTiles()[0].length));
+        heightField.setText(String.valueOf(newLevel.getTiles().length));
     }
 
     /**

@@ -15,7 +15,6 @@ import java.nio.file.Files;
 import java.util.ArrayList;
 
 public class Saver {
-    final static String rep = "."+File.separator+"saved"+File.separator;
     final static String extension0 = ".level0";
     final static String extension1 = ".level1";
     final static String extensionImage = ".png";
@@ -43,10 +42,10 @@ public class Saver {
      * @throws IOException file security or write issues
      */
     @SuppressWarnings("ResultOfMethodCallIgnored")
-    private static ArrayList<Tile> saveTile(Tile[][] tiles,String levelName) throws IOException {
+    private static ArrayList<Tile> saveTile(Tile[][] tiles,String levelName,String path) throws IOException {
         int tileSize = Graphic_Const.TILES_SIZE;
         ArrayList<Tile> toSave = selectTiles(tiles);
-        File file = new File(rep+levelName+extensionImage);
+        File file = new File(path+levelName+extensionImage);
         file.mkdirs();
         file.createNewFile();
         WritableImage image = new WritableImage(toSave.size()* tileSize,tileSize);
@@ -67,24 +66,24 @@ public class Saver {
      * produce three files in the app repository
      */
     @SuppressWarnings("ResultOfMethodCallIgnored")
-    public static void saveLevel(Level level) throws Exception{
-        //TODO path selector
+    public static void saveLevel(Level level,File rep) throws Exception{
+        String path = rep.getAbsolutePath()+File.separator;
         Tile[][] tiles = level.getTiles();
         OverTile[][] overTiles = level.getOverTiles();
         String name = level.getName();
-        ArrayList<Tile> toSave = saveTile(tiles, level.getName());
+        ArrayList<Tile> toSave = saveTile(tiles,name,path);
         int[][] tilesIndex = new int[tiles.length][tiles[0].length];
         for(int i=0;i<tiles.length;i++)
             for(int j=0;j<tiles[0].length;j++)
                 tilesIndex[i][j] = toSave.indexOf(tiles[i][j]);
-        File file = new File(rep+name+extension0);
+        File file = new File(path+name+extension0);
         file.createNewFile();
         ObjectOutputStream oot = new ObjectOutputStream(Files.newOutputStream(file.toPath()));
         oot.writeObject(tilesIndex);
         oot.flush();
         oot.close();
 
-        File file1 = new File(rep+name+extension1);
+        File file1 = new File(path+name+extension1);
         file1.createNewFile();
         ObjectOutputStream oot1 = new ObjectOutputStream(Files.newOutputStream(file1.toPath()));
         oot1.writeObject(overTiles);

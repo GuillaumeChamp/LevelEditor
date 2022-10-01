@@ -10,6 +10,7 @@ import javafx.geometry.Orientation;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.layout.BorderPane;
+import javafx.stage.DirectoryChooser;
 import javafx.stage.FileChooser;
 import javafx.stage.Screen;
 import javafx.stage.Stage;
@@ -70,7 +71,7 @@ public class Editor extends Application {
             File file = new FileChooser().showOpenDialog(theStage);
             Level level1 = Saver.loadLevel(file);
             level.setLevel(level1);
-            panel.setLevelName(level1.getName());
+            panel.updatePannel(level1);
             panel.createTileSet(new File(file.getAbsolutePath().replace(".level0",".png")));
             panel.loadOverTiles(new File(file.getAbsolutePath().replace(".level0", ".level1")));
         } catch (Exception ex) {
@@ -94,7 +95,9 @@ public class Editor extends Application {
         MenuItem save = new MenuItem("save");
         save.setOnAction(e->{
             try {
-                level.saveLevel();
+                DirectoryChooser chooser = new DirectoryChooser();
+                File rep = chooser.showDialog(theStage);
+                level.saveLevel(rep);
             } catch (Exception ex) {
                 throw new RuntimeException(ex);
             }

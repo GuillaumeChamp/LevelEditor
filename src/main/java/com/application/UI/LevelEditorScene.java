@@ -13,6 +13,8 @@ import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.paint.Color;
 
+import java.io.File;
+
 public class LevelEditorScene extends ScrollPane {
     static LevelEditorScene levelEditorScene;
     protected Canvas canvas;
@@ -119,8 +121,8 @@ public class LevelEditorScene extends ScrollPane {
      * Transitive call
      * @throws Exception pass the exception
      */
-    public void saveLevel() throws Exception {
-        Saver.saveLevel(level);
+    public void saveLevel(File rep) throws Exception {
+        Saver.saveLevel(level,rep);
     }
 
     /**
