@@ -75,6 +75,11 @@ public class EditorPanel extends VBox {
             File file = load.showOpenDialog(stage);
             createTileSet(file);
         });
+        Button clear = new Button("Clear TileSet");
+        clear.setOnAction(e->{
+            tileSet.clear();
+            paintTileSet();
+        });
         createCanvas();
         //Adding behaviour
         buildOverTiles();
@@ -91,7 +96,7 @@ public class EditorPanel extends VBox {
         //Adding elements
         this.getChildren().add(new VBox(new Label("level dimension"),createTextField()));
         this.getChildren().add(new VBox(new Label("level Name"),levelName));
-        this.getChildren().addAll(createCheckBox(),picker,tilePane,addTP,overTilePane);
+        this.getChildren().addAll(createCheckBox(),new HBox(picker,clear),tilePane,addTP,overTilePane);
     }
 
     /**
@@ -119,8 +124,8 @@ public class EditorPanel extends VBox {
      * @return HBox with TextField on it
      */
     private HBox createTextField(){
-        widthField = new TextField("200");
-        heightField = new TextField("200");
+        widthField = new TextField("160");
+        heightField = new TextField("160");
         widthField.setTextFormatter(new TextFormatter<>(new NumberStringConverter()));
         heightField.setTextFormatter(new TextFormatter<>(new NumberStringConverter()));
         widthField.setText("200");
@@ -136,7 +141,7 @@ public class EditorPanel extends VBox {
             }
         });
 
-        levelName.setOnKeyPressed(e-> LevelEditorScene.getLevelEditorScene().rename(levelName.getText()));
+        levelName.setOnAction(e-> LevelEditorScene.getLevelEditorScene().rename(levelName.getText()));
 
         return new HBox(widthField,heightField);
     }
@@ -235,8 +240,7 @@ public class EditorPanel extends VBox {
                         tileSet.add(new Tile(tileSkin));
                     }
             paintTileSet();
-        }catch (Exception e){
-            throw new RuntimeException(e);
+        }catch (Exception ignored){
         }
     }
 
@@ -337,7 +341,7 @@ public class EditorPanel extends VBox {
      * Used during the loading process
      * @param newLevel name of the saved level that
      */
-    public void updatePannel(Level newLevel){
+    public void updatePanel(Level newLevel){
         levelName.setText(newLevel.getName());
         widthField.setText(String.valueOf(newLevel.getTiles()[0].length));
         heightField.setText(String.valueOf(newLevel.getTiles().length));

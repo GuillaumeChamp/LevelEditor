@@ -30,4 +30,15 @@ public class Warp extends OverTile {
                 ", yDes=" + yDes +
                 '}';
     }
+    public int getxDes() {
+        return xDes;
+    }
+
+    public int getyDes() {
+        return yDes;
+    }
+
+    public String getExit() {
+        return exit;
+    }
 }

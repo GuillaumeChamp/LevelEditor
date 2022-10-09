@@ -71,11 +71,10 @@ public class Editor extends Application {
             File file = new FileChooser().showOpenDialog(theStage);
             Level level1 = Saver.loadLevel(file);
             level.setLevel(level1);
-            panel.updatePannel(level1);
+            panel.updatePanel(level1);
             panel.createTileSet(new File(file.getAbsolutePath().replace(".level0",".png")));
             panel.loadOverTiles(new File(file.getAbsolutePath().replace(".level0", ".level1")));
-        } catch (Exception ex) {
-            throw new RuntimeException(ex);
+        } catch (Exception ignored) {
         }
     }
 

@@ -67,6 +67,7 @@ public class Saver {
      */
     @SuppressWarnings("ResultOfMethodCallIgnored")
     public static void saveLevel(Level level,File rep) throws Exception{
+        if (rep==null)return;
         String path = rep.getAbsolutePath()+File.separator;
         Tile[][] tiles = level.getTiles();
         OverTile[][] overTiles = level.getOverTiles();

@@ -26,12 +26,21 @@ public class LevelEditorScene extends ScrollPane {
     private LevelEditorScene() {
         this.setWidth(Graphic_Const.DEFAULT_WIDTH);
         this.setHeight(Graphic_Const.DEFAULT_HEIGHT);
+        this.setFitToHeight(true);
+        this.setFitToWidth(true);
         level = new Level(160,160);
-        this.canvas = new Canvas(this.getWidth(),this.getHeight());
+        this.canvas = new Canvas(160*Graphic_Const.TILES_SIZE*Graphic_Const.ratio,160*Graphic_Const.TILES_SIZE*Graphic_Const.ratio);
         canvas.setOnMouseClicked(e->{
             double x = e.getX();
             double y = e.getY();
             if (EditorPanel.getPanel().getSelectedTile() ==null) return;
+            modifyTileAt(x,y,EditorPanel.getPanel().getSelectedTile());
+            paint();
+        });
+        canvas.setOnMouseDragged(e->{
+            double x = e.getX();
+            double y = e.getY();
+            if (EditorPanel.getPanel().getSelectedTile()==null) return;
             modifyTileAt(x,y,EditorPanel.getPanel().getSelectedTile());
             paint();
         });
@@ -114,6 +123,8 @@ public class LevelEditorScene extends ScrollPane {
      */
     public void changeSize(int x,int y){
         level.changeSize(x,y);
+        canvas.setWidth(x*Graphic_Const.TILES_SIZE*Graphic_Const.ratio);
+        canvas.setHeight(y*Graphic_Const.TILES_SIZE*Graphic_Const.ratio);
         paint();
     }
 
