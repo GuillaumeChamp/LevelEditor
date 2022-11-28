@@ -1,5 +1,7 @@
 package com.application.Game.Level.LevelElements.Layer1;
 
+import java.util.Objects;
+
 public class Warp extends OverTile {
     private final String exit;
     private final int xDes;
@@ -40,5 +42,17 @@ public class Warp extends OverTile {
 
     public String getExit() {
         return exit;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (obj instanceof Warp){
+            Warp warp = (Warp) obj;
+            //if (warp.id!=this.id) return false;
+            if (warp.getxDes()!=this.xDes) return false;
+            if (warp.getyDes()!=this.yDes) return false;
+            return Objects.equals(warp.getExit(), this.exit);
+        }
+        return false;
     }
 }

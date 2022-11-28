@@ -7,7 +7,7 @@ import com.application.Game.Level.LevelElements.Layer1.Encounter;
 import com.application.Game.Level.LevelElements.Layer1.OverTile;
 import com.application.Game.Level.LevelElements.Layer1.Warp;
 import com.application.Game.Level.LevelElements.TileTyped;
-import com.application.Game.Level.Saver;
+import com.application.IO.Saver;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.control.ScrollPane;

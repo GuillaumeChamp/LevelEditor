@@ -1,5 +1,6 @@
-package com.application.Game.Level;
+package com.application.IO;
 
+import com.application.Game.Level.Level;
 import com.application.Game.Level.LevelElements.Layer0.Tile;
 import com.application.Game.Level.LevelElements.Layer1.OverTile;
 import com.application.UI.Graphic_Const;
@@ -16,7 +17,6 @@ import java.util.ArrayList;
 
 public class Saver {
     final static String extension0 = ".level0";
-    final static String extension1 = ".level1";
     final static String extensionImage = ".png";
 
     /**
@@ -66,7 +66,7 @@ public class Saver {
      * produce three files in the app repository
      */
     @SuppressWarnings("ResultOfMethodCallIgnored")
-    public static void saveLevel(Level level,File rep) throws Exception{
+    public static void saveLevel(Level level, File rep) throws Exception{
         if (rep==null)return;
         String path = rep.getAbsolutePath()+File.separator;
         Tile[][] tiles = level.getTiles();
@@ -84,12 +84,7 @@ public class Saver {
         oot.flush();
         oot.close();
 
-        File file1 = new File(path+name+extension1);
-        file1.createNewFile();
-        ObjectOutputStream oot1 = new ObjectOutputStream(Files.newOutputStream(file1.toPath()));
-        oot1.writeObject(overTiles);
-        oot1.flush();
-        oot1.close();
+        JSONIO.saveOverTiles(overTiles,path+name+".json",name);
     }
 
     /**
@@ -102,11 +97,10 @@ public class Saver {
         String name = levelFile.getName().replace(extension0,"");
         String path = levelFile.getAbsolutePath().replace(levelFile.getName(),"");
         ObjectInputStream oot = new ObjectInputStream(Files.newInputStream(new File(path + name + extension0).toPath()));
-        ObjectInputStream oot1 = new ObjectInputStream(Files.newInputStream(new File(path + name + extension1).toPath()));
         int[][] tilesIndex = (int[][]) oot.readObject();
-        OverTile[][] overTiles = (OverTile[][]) oot1.readObject();
-        oot.close();
-        oot1.close();
+        //Load with compatibility
+        OverTile[][] overTiles=JSONIO.LoadOverTiles(path + name + ".json");
+
         int height = tilesIndex.length;
         int width = tilesIndex[0].length;
         int tileSize = Graphic_Const.TILES_SIZE;

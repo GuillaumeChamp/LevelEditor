@@ -17,4 +17,18 @@ public abstract class OverTile implements TileTyped, Serializable {
     public int getId() {
         return id;
     }
+
+    @Override
+    public String toString() {
+        return "OverTile{" +
+                "id=" + id +
+                '}';
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (obj instanceof OverTile)
+            return ((OverTile) obj).id == this.id;
+        return false;
+    }
 }

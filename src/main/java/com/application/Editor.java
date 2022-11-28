@@ -4,7 +4,7 @@ import com.application.Game.Level.Level;
 import com.application.UI.EditorPanel;
 import com.application.UI.Graphic_Const;
 import com.application.UI.LevelEditorScene;
-import com.application.Game.Level.Saver;
+import com.application.IO.Saver;
 import javafx.application.Application;
 import javafx.geometry.Orientation;
 import javafx.scene.Scene;

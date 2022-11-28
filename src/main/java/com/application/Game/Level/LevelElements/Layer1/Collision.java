@@ -8,4 +8,9 @@ public class Collision extends OverTile{
     public Collision(){
         this.id=-1;
     }
+
+    @Override
+    public String toString() {
+        return "Collision{}";
+    }
 }
