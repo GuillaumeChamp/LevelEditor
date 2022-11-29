@@ -8,15 +8,19 @@ import com.application.Game.Level.LevelElements.Layer1.OverTile;
 import com.application.Game.Level.LevelElements.Layer1.Warp;
 import com.application.Game.Level.LevelElements.TileTyped;
 import com.application.IO.Saver;
+import javafx.geometry.Orientation;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
-import javafx.scene.control.ScrollPane;
+import javafx.scene.control.ScrollBar;
+import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
 
 import java.io.File;
 
-public class LevelEditorScene extends ScrollPane {
+public class LevelEditorScene extends Pane {
     static LevelEditorScene levelEditorScene;
+    ScrollBar horizontalBar = new ScrollBar();
+    ScrollBar verticalBar = new ScrollBar();
     protected Canvas canvas;
     private Level level;
 
@@ -26,26 +30,50 @@ public class LevelEditorScene extends ScrollPane {
     private LevelEditorScene() {
         this.setWidth(Graphic_Const.DEFAULT_WIDTH);
         this.setHeight(Graphic_Const.DEFAULT_HEIGHT);
-        this.setFitToHeight(true);
-        this.setFitToWidth(true);
-        level = new Level(160,160);
-        this.canvas = new Canvas(160*Graphic_Const.TILES_SIZE*Graphic_Const.ratio,160*Graphic_Const.TILES_SIZE*Graphic_Const.ratio);
+        this.setBound(200,200);
+        verticalBar.setLayoutX(this.getWidth() - 20); //Use what you need
+        verticalBar.setOrientation(Orientation.VERTICAL);
+        verticalBar.setPrefHeight(this.getHeight());
+        level = new Level(200,200);
+        this.canvas = new Canvas(this.getWidth(),this.getHeight());
         canvas.setOnMouseClicked(e->{
-            double x = e.getX();
-            double y = e.getY();
-            if (EditorPanel.getPanel().getSelectedTile() ==null) return;
-            modifyTileAt(x,y,EditorPanel.getPanel().getSelectedTile());
-            paint();
-        });
-        canvas.setOnMouseDragged(e->{
-            double x = e.getX();
-            double y = e.getY();
+            double x = (e.getX()) + (horizontalBar.getValue());
+            double y = (e.getY()) + (verticalBar.getValue());
             if (EditorPanel.getPanel().getSelectedTile()==null) return;
             modifyTileAt(x,y,EditorPanel.getPanel().getSelectedTile());
             paint();
         });
-        this.setContent(canvas);
+        this.setOnScroll(e->{
+            if(horizontalBar.getValue()-e.getDeltaX()<horizontalBar.getMax())
+                if (horizontalBar.getValue()-e.getDeltaX()>horizontalBar.getMin())
+                    horizontalBar.setValue(horizontalBar.getValue()-e.getDeltaX());
+            if(verticalBar.getValue()-e.getDeltaY()<verticalBar.getMax())
+                if (verticalBar.getValue()-e.getDeltaY()>verticalBar.getMin())
+                    verticalBar.setValue(verticalBar.getValue()-e.getDeltaY());
+            paint();
+        });
+
+        canvas.setOnMouseDragged(e->{
+            double x = e.getX() + horizontalBar.getValue();
+            double y = e.getY() + verticalBar.getValue();
+            if (EditorPanel.getPanel().getSelectedTile()==null) return;
+            modifyTileAt(x,y,EditorPanel.getPanel().getSelectedTile());
+            paint();
+        });
+        this.getChildren().add(canvas);
         paint();
+    }
+
+    /**
+     * This methode to adjust slider to allow the canvas to slide in the whole level
+     * @param hTiles number or horizontal tiles
+     * @param vTiles number of vertical tiles
+     */
+    private void setBound(int hTiles,int vTiles) {
+        this.horizontalBar.setMax(hTiles*Graphic_Const.TILES_SIZE*Graphic_Const.ratio-this.getWidth());
+        this.horizontalBar.setValue(0);
+        this.verticalBar.setMax(vTiles*Graphic_Const.TILES_SIZE*Graphic_Const.ratio-this.getHeight());
+        this.verticalBar.setValue(0);
     }
 
     /**
@@ -61,7 +89,8 @@ public class LevelEditorScene extends ScrollPane {
      * Create a new level and reset all tiles
      */
     public void newLevelRequest() {
-        this.level = new Level(level.getTiles().length,level.getTiles()[0].length);
+        this.level = new Level(level.getTiles()[0].length,level.getTiles().length);
+        this.setBound(level.getTiles()[0].length,level.getTiles().length);
         paint();
     }
 
@@ -75,22 +104,24 @@ public class LevelEditorScene extends ScrollPane {
         double ratio = Graphic_Const.ratio;
         Tile[][] tiles = level.getTiles();
         OverTile[][] overTiles = level.getOverTiles();
-        for(int i=0;i<tiles.length;i++){
-            for (int j=0;j<tiles[0].length;j++){
+        double sliderVerticalOffSet =  (verticalBar.getValue()/ratio/tileSize);
+        double sliderHorizontalVOffSet = (horizontalBar.getValue()/ratio/tileSize);
+        for(int i = (int) sliderHorizontalVOffSet; i<sliderHorizontalVOffSet+this.getWidth()/tileSize/ratio; i++){
+            for (int j = (int) sliderVerticalOffSet; j<sliderVerticalOffSet+this.getHeight()/tileSize/ratio; j++){
+                double x = (i-sliderHorizontalVOffSet)*tileSize;
+                double y = (j-sliderVerticalOffSet)*tileSize;
                 if (tiles[i][j]!=null) {
-                    gc.drawImage(tiles[i][j].getSkin(), i * tileSize * ratio, j * tileSize * ratio, tileSize * ratio, tileSize * ratio);
+                    gc.drawImage(tiles[i][j].getSkin(), x * ratio, y * ratio, tileSize * ratio, tileSize * ratio);
                 }
                 if (overTiles[i][j]!= null && Graphic_Const.SHOW_CALC){
-                    if(overTiles[i][j].getClass()== Warp.class) gc.setFill(Color.color(0.5,0.5,0.5,0.3));
-                    if (overTiles[i][j].getClass()== Encounter.class) gc.setFill(Color.color(0.8,0,0,0.3));
-                    if (overTiles[i][j].getClass()== Collision.class) gc.setFill(Color.color(0,0,0,0.8));
-                    double x = i*tileSize;
-                    double y = j*tileSize;
+                    if(overTiles[i][j] instanceof Warp) gc.setFill(Color.color(0.5,0.5,0.5,0.3));
+                    if (overTiles[i][j] instanceof Encounter) gc.setFill(Color.color(0.8,0,0,0.3));
+                    if (overTiles[i][j] instanceof Collision) gc.setFill(Color.color(0,0,0,0.8));
                     gc.fillRect( x * ratio, y * ratio, tileSize * ratio, tileSize * ratio);
                     gc.setFill(Color.color(1,0,0,1));
                     gc.fillText(String.valueOf(overTiles[i][j].getId()),(x+tileSize/2.0)*ratio,(y+tileSize/2.0)*ratio);
                 }
-                if (Graphic_Const.SHOW_GRID) gc.strokeRect(i * tileSize * ratio, j * tileSize * ratio, tileSize * ratio, tileSize * ratio);
+                if (Graphic_Const.SHOW_GRID) gc.strokeRect(x * ratio, y * ratio, tileSize * ratio, tileSize * ratio);
             }
         }
     }
@@ -112,7 +143,7 @@ public class LevelEditorScene extends ScrollPane {
                 level.getOverTiles()[(int) xIndex][(int) yIndex] = (OverTile) newTile;
             }
         }catch (Exception e){
-            System.out.println("Miss Click");
+            System.out.println("Miss Click at x=" +x+" and y=" + y);
         }
     }
 
@@ -123,8 +154,7 @@ public class LevelEditorScene extends ScrollPane {
      */
     public void changeSize(int x,int y){
         level.changeSize(x,y);
-        canvas.setWidth(x*Graphic_Const.TILES_SIZE*Graphic_Const.ratio);
-        canvas.setHeight(y*Graphic_Const.TILES_SIZE*Graphic_Const.ratio);
+        this.setBound(x,y);
         paint();
     }
 

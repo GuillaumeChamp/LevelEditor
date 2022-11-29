@@ -7,6 +7,7 @@ import com.application.Game.Level.LevelElements.Layer1.Encounter;
 import com.application.Game.Level.LevelElements.Layer1.OverTile;
 import com.application.Game.Level.LevelElements.Layer1.Warp;
 import com.application.Game.Level.LevelElements.TileTyped;
+import com.application.UI.Elements.PopUpName;
 import com.application.UI.Elements.PopUpTP;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
@@ -38,7 +39,6 @@ public class EditorPanel extends VBox {
     private final ArrayList<Tile> tileSet =new ArrayList<>();
     private final ArrayList<OverTile> overTileSet =new ArrayList<>();
     private TileTyped selectedTile;
-    private final TextField levelName= new TextField("levelName");
     TextField widthField;
     TextField heightField;
 
@@ -92,10 +92,19 @@ public class EditorPanel extends VBox {
                 overTileSet.add(popUpTP.getTP());
             paintOverTileSet();
         });
+        Button levelName = new Button("Rename Level");
+        levelName.setOnAction(e->{
+            PopUpName popUpName = new PopUpName();
+            Optional<ButtonType> ans = popUpName.showAndWait();
+            assert ans.isPresent();
+            if (ans.get().getText().equals("confirm"))
+                LevelEditorScene.getLevelEditorScene().rename(popUpName.getName());
+            paintOverTileSet();
+        });
 
         //Adding elements
         this.getChildren().add(new VBox(new Label("level dimension"),createTextField()));
-        this.getChildren().add(new VBox(new Label("level Name"),levelName));
+        this.getChildren().add(new VBox(new Label("level Name"), levelName));
         this.getChildren().addAll(createCheckBox(),new HBox(picker,clear),tilePane,addTP,overTilePane);
     }
 
@@ -140,8 +149,6 @@ public class EditorPanel extends VBox {
                 LevelEditorScene.getLevelEditorScene().changeSize(Integer.parseInt(widthField.getText()),Integer.parseInt(heightField.getText()));
             }
         });
-
-        levelName.setOnAction(e-> LevelEditorScene.getLevelEditorScene().rename(levelName.getText()));
 
         return new HBox(widthField,heightField);
     }
@@ -339,10 +346,9 @@ public class EditorPanel extends VBox {
 
     /**
      * Used during the loading process
-     * @param newLevel name of the saved level that
+     * @param newLevel hold the new data
      */
     public void updatePanel(Level newLevel){
-        levelName.setText(newLevel.getName());
         widthField.setText(String.valueOf(newLevel.getTiles()[0].length));
         heightField.setText(String.valueOf(newLevel.getTiles().length));
     }
