@@ -98,7 +98,7 @@ public class EditorPanel extends VBox {
             Optional<ButtonType> ans = popUpName.showAndWait();
             assert ans.isPresent();
             if (ans.get().getText().equals("confirm"))
-                LevelEditorScene.getLevelEditorScene().rename(popUpName.getName());
+                LevelEditorScene.getLevelEditorScene().renameLevel(popUpName.getName());
             paintOverTileSet();
         });
 
@@ -141,12 +141,12 @@ public class EditorPanel extends VBox {
         heightField.setText("200");
         widthField.setOnKeyPressed(e->{
             if (e.getCode().equals(KeyCode.ENTER)) {
-                LevelEditorScene.getLevelEditorScene().changeSize(Integer.parseInt(widthField.getText()),Integer.parseInt(heightField.getText()));
+                LevelEditorScene.getLevelEditorScene().changeLevelSize(Integer.parseInt(widthField.getText()),Integer.parseInt(heightField.getText()));
             }
         });
         heightField.setOnKeyPressed(e->{
             if (e.getCode().equals(KeyCode.ENTER)) {
-                LevelEditorScene.getLevelEditorScene().changeSize(Integer.parseInt(widthField.getText()),Integer.parseInt(heightField.getText()));
+                LevelEditorScene.getLevelEditorScene().changeLevelSize(Integer.parseInt(widthField.getText()),Integer.parseInt(heightField.getText()));
             }
         });
 
@@ -222,6 +222,8 @@ public class EditorPanel extends VBox {
      * @param width width of the Editor Pane
      */
     public void resizeOptions(double width){
+        this.setPrefWidth(width);
+
         tilePane.setMaxWidth(width);
         overTilePane.setMaxWidth(width);
         if (!tileSet.isEmpty()) paintTileSet();

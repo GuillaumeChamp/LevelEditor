@@ -31,7 +31,6 @@ public class Editor extends Application {
         Graphic_Const.DEFAULT_HEIGHT = Screen.getPrimary().getBounds().getHeight()-borderYSize;
 
         theStage.setOnCloseRequest(event -> {
-            //your code goes here
             Alert confirm = new Alert(Alert.AlertType.CONFIRMATION);
             ButtonType yes = new ButtonType("YES");
             ButtonType no = new ButtonType("no");
@@ -48,9 +47,11 @@ public class Editor extends Application {
         splitPane = new SplitPane(panel,level);
         splitPane.setOrientation(Orientation.HORIZONTAL);
         theStage.showingProperty().addListener(e-> splitPane.setDividerPosition(0,0.4));
-        splitPane.getDividers().get(0).positionProperty().addListener(e-> panel.resizeOptions(splitPane.getDividers().get(0).getPosition()*theStage.getWidth()));
+        splitPane.getDividers().get(0).positionProperty().addListener(e-> {
+            panel.resizeOptions(splitPane.getDividers().get(0).getPosition()*theStage.getWidth());
+            level.resizeOptions(theStage.getWidth()-panel.getWidth());
+        });
 
-        // place splitPane as center
         BorderPane borderPane = new BorderPane(splitPane);
 
         borderPane.setTop(CreateMenu(theStage,level,panel));

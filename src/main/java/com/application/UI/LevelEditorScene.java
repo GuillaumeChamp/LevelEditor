@@ -8,14 +8,17 @@ import com.application.Game.Level.LevelElements.Layer1.OverTile;
 import com.application.Game.Level.LevelElements.Layer1.Warp;
 import com.application.Game.Level.LevelElements.TileTyped;
 import com.application.IO.Saver;
+import com.application.UI.Elements.PopUpName;
 import javafx.geometry.Orientation;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
+import javafx.scene.control.ButtonType;
 import javafx.scene.control.ScrollBar;
 import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
 
 import java.io.File;
+import java.util.Optional;
 
 public class LevelEditorScene extends Pane {
     static LevelEditorScene levelEditorScene;
@@ -29,9 +32,9 @@ public class LevelEditorScene extends Pane {
      */
     private LevelEditorScene() {
         this.setWidth(Graphic_Const.DEFAULT_WIDTH);
+        this.setPrefWidth(Graphic_Const.DEFAULT_WIDTH);
         this.setHeight(Graphic_Const.DEFAULT_HEIGHT);
-        this.setBound(200,200);
-        verticalBar.setLayoutX(this.getWidth() - 20); //Use what you need
+        verticalBar.setLayoutX(this.getWidth() - 20);
         verticalBar.setOrientation(Orientation.VERTICAL);
         verticalBar.setPrefHeight(this.getHeight());
         level = new Level(200,200);
@@ -46,12 +49,14 @@ public class LevelEditorScene extends Pane {
         this.setOnScroll(e->{
             if(horizontalBar.getValue()-e.getDeltaX()<horizontalBar.getMax())
                 if (horizontalBar.getValue()-e.getDeltaX()>horizontalBar.getMin())
-                    horizontalBar.setValue(horizontalBar.getValue()-e.getDeltaX());
+                    horizontalBar.setValue(horizontalBar.getValue()-e.getDeltaX()*1.1);
             if(verticalBar.getValue()-e.getDeltaY()<verticalBar.getMax())
                 if (verticalBar.getValue()-e.getDeltaY()>verticalBar.getMin())
-                    verticalBar.setValue(verticalBar.getValue()-e.getDeltaY());
+                    verticalBar.setValue(verticalBar.getValue()-e.getDeltaY()*1.1);
             paint();
         });
+
+
 
         canvas.setOnMouseDragged(e->{
             double x = e.getX() + horizontalBar.getValue();
@@ -61,6 +66,7 @@ public class LevelEditorScene extends Pane {
             paint();
         });
         this.getChildren().add(canvas);
+        this.setBound(200,200);
         paint();
     }
 
@@ -70,9 +76,11 @@ public class LevelEditorScene extends Pane {
      * @param vTiles number of vertical tiles
      */
     private void setBound(int hTiles,int vTiles) {
-        this.horizontalBar.setMax(hTiles*Graphic_Const.TILES_SIZE*Graphic_Const.ratio-this.getWidth());
+        final int horizontalOverFlow=1;
+        final int verticalOverFlow=1;
+        this.horizontalBar.setMax((hTiles+horizontalOverFlow)*Graphic_Const.TILES_SIZE*Graphic_Const.ratio-this.getWidth());
         this.horizontalBar.setValue(0);
-        this.verticalBar.setMax(vTiles*Graphic_Const.TILES_SIZE*Graphic_Const.ratio-this.getHeight());
+        this.verticalBar.setMax((vTiles+verticalOverFlow)*Graphic_Const.TILES_SIZE*Graphic_Const.ratio-this.getHeight());
         this.verticalBar.setValue(0);
     }
 
@@ -89,6 +97,11 @@ public class LevelEditorScene extends Pane {
      * Create a new level and reset all tiles
      */
     public void newLevelRequest() {
+        PopUpName popUpName = new PopUpName();
+        Optional<ButtonType> ans = popUpName.showAndWait();
+        assert ans.isPresent();
+        if (ans.get().getText().equals("confirm"))
+            this.renameLevel(popUpName.getName());
         this.level = new Level(level.getTiles()[0].length,level.getTiles().length);
         this.setBound(level.getTiles()[0].length,level.getTiles().length);
         paint();
@@ -106,8 +119,8 @@ public class LevelEditorScene extends Pane {
         OverTile[][] overTiles = level.getOverTiles();
         double sliderVerticalOffSet =  (verticalBar.getValue()/ratio/tileSize);
         double sliderHorizontalVOffSet = (horizontalBar.getValue()/ratio/tileSize);
-        for(int i = (int) sliderHorizontalVOffSet; i<sliderHorizontalVOffSet+this.getWidth()/tileSize/ratio; i++){
-            for (int j = (int) sliderVerticalOffSet; j<sliderVerticalOffSet+this.getHeight()/tileSize/ratio; j++){
+        for(int i = (int) sliderHorizontalVOffSet; i<Math.min(sliderHorizontalVOffSet+this.getWidth()/tileSize/ratio,tiles.length); i++){
+            for (int j = (int) sliderVerticalOffSet; j<Math.min(sliderVerticalOffSet+this.getHeight()/tileSize/ratio,tiles[0].length); j++){
                 double x = (i-sliderHorizontalVOffSet)*tileSize;
                 double y = (j-sliderVerticalOffSet)*tileSize;
                 if (tiles[i][j]!=null) {
@@ -152,7 +165,7 @@ public class LevelEditorScene extends Pane {
      * @param x new width
      * @param y new height
      */
-    public void changeSize(int x,int y){
+    public void changeLevelSize(int x, int y){
         level.changeSize(x,y);
         this.setBound(x,y);
         paint();
@@ -170,7 +183,7 @@ public class LevelEditorScene extends Pane {
      * Transitive call
      * @param name new name
      */
-    public void rename(String name){
+    public void renameLevel(String name){
         level.setName(name);
     }
 
@@ -180,6 +193,12 @@ public class LevelEditorScene extends Pane {
      */
     public void setLevel(Level loadLevel) {
         this.level=loadLevel;
+        paint();
+    }
+
+    public void resizeOptions(double width) {
+        this.setPrefWidth(width);
+        this.setBound(level.getTiles()[0].length,level.getTiles().length);
         paint();
     }
 }
