@@ -210,7 +210,7 @@ public class EditorPanel extends VBox {
      * @throws IndexOutOfBoundsException if click is out of the tile set
      */
     private TileTyped getOverTileAt(double x, double y) throws IndexOutOfBoundsException {
-        double ratio = Graphic_Const.ratio;
+        double ratio = Graphic_Const.ratioEditor;
         int tileSize = Graphic_Const.TILES_SIZE;
         double tilesPerLine = Math.round(tilePane.getWidth()/(tileSize*ratio));
         int index = (int) (Math.floor(y/(ratio*tileSize))*tilesPerLine+Math.floor(x/(tileSize*ratio)));
@@ -261,7 +261,7 @@ public class EditorPanel extends VBox {
         gc.clearRect(0, 0, canvasTile.getWidth(), canvasTile.getHeight());
         double x = 0;
         double y = 0;
-        double ratio = Graphic_Const.ratio;
+        double ratio = Graphic_Const.ratioEditor;
         int tileSize = Graphic_Const.TILES_SIZE;
         double tilesPerLine = Math.round(tilePane.getWidth()/(tileSize*ratio));
         double xMax = (tilesPerLine)*tileSize;
@@ -294,7 +294,7 @@ public class EditorPanel extends VBox {
         gc.clearRect(0, 0, canvasTile.getWidth(), canvasTile.getHeight());
         double x = 0;
         double y = 0;
-        double ratio = Graphic_Const.ratio;
+        double ratio = Graphic_Const.ratioEditor;
         int tileSize = Graphic_Const.TILES_SIZE;
         double tilesPerLine = Math.round(overTilePane.getWidth()/(tileSize*ratio));
         double xMax = (tilesPerLine)*tileSize;
@@ -339,7 +339,7 @@ public class EditorPanel extends VBox {
      * @throws IndexOutOfBoundsException if click is out of the tile set
      */
     private Tile getTileAt(double x, double y) throws IndexOutOfBoundsException{
-        double ratio = Graphic_Const.ratio;
+        double ratio = Graphic_Const.ratioEditor;
         int tileSize = Graphic_Const.TILES_SIZE;
         double tilesPerLine = Math.round(tilePane.getWidth()/(tileSize*ratio));
         int index = (int) (Math.floor(y/(ratio*tileSize))*tilesPerLine+Math.floor(x/(tileSize*ratio)));

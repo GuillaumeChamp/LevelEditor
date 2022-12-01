@@ -26,13 +26,14 @@ public class LevelEditorScene extends Pane {
     ScrollBar verticalBar = new ScrollBar();
     protected Canvas canvas;
     private Level level;
+    private double ratio = Graphic_Const.ratioEditor;
 
     /**
      * Private constructor
      */
     private LevelEditorScene() {
         this.setWidth(Graphic_Const.DEFAULT_WIDTH);
-        this.setPrefWidth(Graphic_Const.DEFAULT_WIDTH);
+        //this.setPrefWidth(Graphic_Const.DEFAULT_WIDTH);
         this.setHeight(Graphic_Const.DEFAULT_HEIGHT);
         verticalBar.setLayoutX(this.getWidth() - 20);
         verticalBar.setOrientation(Orientation.VERTICAL);
@@ -47,6 +48,16 @@ public class LevelEditorScene extends Pane {
             paint();
         });
         this.setOnScroll(e->{
+            if (e.isControlDown()){
+                if (e.getDeltaX()+e.getDeltaY()>0) ratio=ratio+0.2;
+                else {
+                    ratio=ratio-0.2;
+                    if (ratio<0.8) ratio=0.8;
+                }
+                paint();
+                this.setBound(level.getTiles()[0].length,level.getTiles().length);
+                return;
+            }
             if(horizontalBar.getValue()-e.getDeltaX()<horizontalBar.getMax())
                 if (horizontalBar.getValue()-e.getDeltaX()>horizontalBar.getMin())
                     horizontalBar.setValue(horizontalBar.getValue()-e.getDeltaX()*1.1);
@@ -78,10 +89,10 @@ public class LevelEditorScene extends Pane {
     private void setBound(int hTiles,int vTiles) {
         final int horizontalOverFlow=1;
         final int verticalOverFlow=1;
-        this.horizontalBar.setMax((hTiles+horizontalOverFlow)*Graphic_Const.TILES_SIZE*Graphic_Const.ratio-this.getWidth());
-        this.horizontalBar.setValue(0);
-        this.verticalBar.setMax((vTiles+verticalOverFlow)*Graphic_Const.TILES_SIZE*Graphic_Const.ratio-this.getHeight());
-        this.verticalBar.setValue(0);
+        this.horizontalBar.setMax((hTiles+horizontalOverFlow)*Graphic_Const.TILES_SIZE*ratio -this.getWidth());
+        if (horizontalBar.getValue()>horizontalBar.getMax()) this.horizontalBar.setValue(horizontalBar.getMax());
+        this.verticalBar.setMax((vTiles+verticalOverFlow)*Graphic_Const.TILES_SIZE*ratio -this.getHeight());
+        if (verticalBar.getValue()>verticalBar.getMax()) this.verticalBar.setValue(verticalBar.getMax());
     }
 
     /**
@@ -114,7 +125,6 @@ public class LevelEditorScene extends Pane {
         GraphicsContext gc = canvas.getGraphicsContext2D();
         gc.clearRect(0, 0, canvas.getWidth(), canvas.getHeight());
         int tileSize = Graphic_Const.TILES_SIZE;
-        double ratio = Graphic_Const.ratio;
         Tile[][] tiles = level.getTiles();
         OverTile[][] overTiles = level.getOverTiles();
         double sliderVerticalOffSet =  (verticalBar.getValue()/ratio/tileSize);
@@ -146,7 +156,6 @@ public class LevelEditorScene extends Pane {
      * @param newTile current tile
      */
     public void modifyTileAt(double x, double y, TileTyped newTile){
-        double ratio = Graphic_Const.ratio;
         int tileSize = Graphic_Const.TILES_SIZE;
         try {
             double xIndex = Math.floor(x / (tileSize * ratio));
