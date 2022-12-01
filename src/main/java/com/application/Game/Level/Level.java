@@ -6,8 +6,9 @@ import com.application.Game.Level.LevelElements.Layer1.OverTile;
 
 public class Level {
     private String name="untiled";
-    private Tile[][] tiles;
-    private OverTile[][] overTiles;
+    private Tile[][] groundLayerTiles;
+    private Tile[][] details;
+    private OverTile[][] behaviourTiles;
 
     /**
      * Create a level with the determinate size
@@ -15,9 +16,10 @@ public class Level {
      * @param vTile number of row
      */
     public Level(int hTile, int vTile){
-        tiles = new Tile[hTile][vTile];
-        overTiles = new OverTile[hTile][vTile];
-        Tile.initTiles(tiles);
+        groundLayerTiles = new Tile[hTile][vTile];
+        details = new Tile[hTile][vTile];
+        behaviourTiles = new OverTile[hTile][vTile];
+        Tile.initTiles(groundLayerTiles);
     }
 
     /**
@@ -28,32 +30,47 @@ public class Level {
     public void changeSize(int x,int y){
         Tile[][] newTiles = new Tile[x][y];
         OverTile[][] newOverTiles = new OverTile[x][y];
-        int lineToCopy = Math.min(x,tiles.length);
-        int columnToCopy = Math.min(y,tiles[0].length);
+        Tile[][] newDetails = new Tile[x][y];
+        int lineToCopy = Math.min(x, groundLayerTiles.length);
+        int columnToCopy = Math.min(y, groundLayerTiles[0].length);
         Tile.initTiles(newTiles);
 
         for (int i = 0; i < lineToCopy; i++) {
-            System.arraycopy(tiles[i], 0, newTiles[i], 0, columnToCopy);
-            System.arraycopy(overTiles[i], 0, newOverTiles[i], 0, columnToCopy);
+            System.arraycopy(groundLayerTiles[i], 0, newTiles[i], 0, columnToCopy);
+            System.arraycopy(behaviourTiles[i], 0, newOverTiles[i], 0, columnToCopy);
+            System.arraycopy(details[i], 0, newDetails[i], 0, columnToCopy);
         }
-        tiles=newTiles;
-        overTiles= newOverTiles;
+        groundLayerTiles =newTiles;
+        behaviourTiles = newOverTiles;
+        details=newDetails;
     }
 
     public void setName(String name) {
         this.name = name;
     }
-    public void setOverTiles(OverTile[][] overTiles) {
-        this.overTiles = overTiles;
+    public void setBehaviourTiles(OverTile[][] behaviourTiles) {
+        this.behaviourTiles = behaviourTiles;
     }
 
     public String getName() {
         return name;
     }
-    public OverTile[][] getOverTiles() {
-        return overTiles;
+    public OverTile[][] getBehaviourTiles() {
+        return behaviourTiles;
     }
-    public Tile[][] getTiles() {
-        return tiles;
+    public Tile[][] getGroundLayerTiles() {
+        return groundLayerTiles;
+    }
+
+    public Tile[][] getDetails() {
+        return details;
+    }
+
+    public void setGroundLayerTiles(Tile[][] ground) {
+        this.groundLayerTiles = ground;
+    }
+
+    public void setDetails(Tile[][] details) {
+        this.details = details;
     }
 }

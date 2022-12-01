@@ -10,4 +10,5 @@ public class Graphic_Const {
     public static double ratioEditor = 2;
     public static boolean SHOW_CALC = true;
     public static boolean SHOW_GRID= true;
+    public static boolean SHOW_DETAILS = true;
 }

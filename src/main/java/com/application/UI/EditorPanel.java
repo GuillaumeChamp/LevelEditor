@@ -9,6 +9,8 @@ import com.application.Game.Level.LevelElements.Layer1.Warp;
 import com.application.Game.Level.LevelElements.TileTyped;
 import com.application.UI.Elements.PopUpName;
 import com.application.UI.Elements.PopUpTP;
+import javafx.collections.FXCollections;
+import javafx.geometry.Pos;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.control.*;
@@ -39,8 +41,9 @@ public class EditorPanel extends VBox {
     private final ArrayList<Tile> tileSet =new ArrayList<>();
     private final ArrayList<OverTile> overTileSet =new ArrayList<>();
     private TileTyped selectedTile;
-    TextField widthField;
-    TextField heightField;
+    private TextField widthField;
+    private TextField heightField;
+    private final ComboBox<String> layerSelector = new ComboBox<>(FXCollections.observableArrayList("ground", "details"));
 
     /**
      * Singleton behaviour
@@ -102,10 +105,17 @@ public class EditorPanel extends VBox {
             paintOverTileSet();
         });
 
+        layerSelector.setValue("ground");
+
         //Adding elements
         this.getChildren().add(new VBox(new Label("level dimension"),createTextField()));
         this.getChildren().add(new VBox(new Label("level Name"), levelName));
-        this.getChildren().addAll(createCheckBox(),new HBox(picker,clear),tilePane,addTP,overTilePane);
+        this.getChildren().addAll(createCheckBox(),
+                new VBox(new Label("Layer Selector"),layerSelector),
+                new HBox(picker,clear),
+                tilePane,
+                addTP,
+                overTilePane);
     }
 
     /**
@@ -115,6 +125,7 @@ public class EditorPanel extends VBox {
     private HBox createCheckBox() {
         CheckBox showCalc = new CheckBox("show calc");
         CheckBox showGrid = new CheckBox("show grid");
+        CheckBox showDetails = new CheckBox("show details");
         showCalc.setSelected(true);
         showCalc.setOnAction(e->{
             Graphic_Const.SHOW_CALC =showCalc.isSelected();
@@ -125,7 +136,13 @@ public class EditorPanel extends VBox {
             Graphic_Const.SHOW_GRID = showGrid.isSelected();
             LevelEditorScene.getLevelEditorScene().paint();
         });
-        return new HBox(showCalc,showGrid);
+        showDetails.setSelected(true);
+        showDetails.setOnAction(e->{
+
+        });
+        HBox hBox = new HBox(showCalc,showGrid,showDetails);
+        hBox.setAlignment(Pos.CENTER);
+        return hBox;
     }
 
     /**
@@ -351,8 +368,8 @@ public class EditorPanel extends VBox {
      * @param newLevel hold the new data
      */
     public void updatePanel(Level newLevel){
-        widthField.setText(String.valueOf(newLevel.getTiles()[0].length));
-        heightField.setText(String.valueOf(newLevel.getTiles().length));
+        widthField.setText(String.valueOf(newLevel.getGroundLayerTiles()[0].length));
+        heightField.setText(String.valueOf(newLevel.getGroundLayerTiles().length));
     }
 
     /**
@@ -371,5 +388,8 @@ public class EditorPanel extends VBox {
             }
         }
         paintOverTileSet();
+    }
+    public String getLayer(){
+        return layerSelector.getValue();
     }
 }

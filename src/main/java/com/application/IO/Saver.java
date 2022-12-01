@@ -24,39 +24,42 @@ public class Saver {
      * @param tiles the whole tile set
      * @return reduced tiles set in an array list
      */
-    private static ArrayList<Tile> selectTiles(Tile[][] tiles){
+    private static ArrayList<Tile> selectTiles(Tile[][] tiles,Tile[][] details){
         ArrayList<Tile> selected = new ArrayList<>();
         for (Tile[] tile : tiles) {
             for (int j = 0; j < tiles[0].length; j++) {
                 if (!selected.contains(tile[j])) selected.add(tile[j]);
             }
         }
+        for (Tile[] tile : details) {
+            for (int j = 0; j < tiles[0].length; j++) {
+                if (tile[j]!=null)
+                    if (!selected.contains(tile[j])) selected.add(tile[j]);
+            }
+        }
         return selected;
     }
 
     /**
-     * Save tiles
-     * @param tiles all tiles
+     * Save texture of tiles in a png file
+     * @param selectedTiles all unique tiles
      * @param levelName name of the output file
-     * @return minimal list of tiles
      * @throws IOException file security or write issues
      */
     @SuppressWarnings("ResultOfMethodCallIgnored")
-    private static ArrayList<Tile> saveTile(Tile[][] tiles,String levelName,String path) throws IOException {
+    private static void saveTilesSkin(ArrayList<Tile> selectedTiles, String levelName, String path) throws IOException {
         int tileSize = Graphic_Const.TILES_SIZE;
-        ArrayList<Tile> toSave = selectTiles(tiles);
-        File file = new File(path+levelName+extensionImage);
-        file.mkdirs();
-        file.createNewFile();
-        WritableImage image = new WritableImage(toSave.size()* tileSize,tileSize);
+        File imageFile = new File(path+levelName+extensionImage);
+        imageFile.mkdirs();
+        imageFile.createNewFile();
+        WritableImage image = new WritableImage(selectedTiles.size()* tileSize,tileSize);
         PixelWriter writer = image.getPixelWriter();
         PixelReader reader;
-        for (int i=0;i<toSave.size();i++) {
-            reader = toSave.get(i).getSkin().getPixelReader();
+        for (int i=0;i<selectedTiles.size();i++) {
+            reader = selectedTiles.get(i).getSkin().getPixelReader();
             writer.setPixels(tileSize * i, 0, tileSize, tileSize, reader, 0, 0);
         }
-        ImageIO.write(SwingFXUtils.fromFXImage(image, null), "png", file);
-        return toSave;
+        ImageIO.write(SwingFXUtils.fromFXImage(image, null), "png", imageFile);
     }
 
     /**
@@ -69,18 +72,25 @@ public class Saver {
     public static void saveLevel(Level level, File rep) throws Exception{
         if (rep==null)return;
         String path = rep.getAbsolutePath()+File.separator;
-        Tile[][] tiles = level.getTiles();
-        OverTile[][] overTiles = level.getOverTiles();
+        Tile[][] groundLayerTiles = level.getGroundLayerTiles();
+        Tile[][] details = level.getDetails();
+        OverTile[][] overTiles = level.getBehaviourTiles();
         String name = level.getName();
-        ArrayList<Tile> toSave = saveTile(tiles,name,path);
-        int[][] tilesIndex = new int[tiles.length][tiles[0].length];
-        for(int i=0;i<tiles.length;i++)
-            for(int j=0;j<tiles[0].length;j++)
-                tilesIndex[i][j] = toSave.indexOf(tiles[i][j]);
+        ArrayList<Tile> uniqueTilesList = selectTiles(groundLayerTiles,details);
+        saveTilesSkin(uniqueTilesList,name,path);
+        int[][] groundIndex = new int[groundLayerTiles.length][groundLayerTiles[0].length];
+        int[][] detailIndex = new int[details.length][details[0].length];
+        for(int i=0;i<groundLayerTiles.length;i++)
+            for(int j=0;j<groundLayerTiles[0].length;j++){
+                groundIndex[i][j] = uniqueTilesList.indexOf(groundLayerTiles[i][j]);
+                detailIndex[i][j] = uniqueTilesList.indexOf(details[i][j]);
+            }
+
         File file = new File(path+name+extension0);
         file.createNewFile();
         ObjectOutputStream oot = new ObjectOutputStream(Files.newOutputStream(file.toPath()));
-        oot.writeObject(tilesIndex);
+        oot.writeObject(groundIndex);
+        oot.writeObject(detailIndex);
         oot.flush();
         oot.close();
 
@@ -98,7 +108,8 @@ public class Saver {
         String path = levelFile.getAbsolutePath().replace(levelFile.getName(),"");
         ObjectInputStream oot = new ObjectInputStream(Files.newInputStream(new File(path + name + extension0).toPath()));
         int[][] tilesIndex = (int[][]) oot.readObject();
-        //Load with compatibility
+        int[][] detailsIndex = (int[][]) oot.readObject();
+
         OverTile[][] overTiles=JSONIO.LoadOverTiles(path + name + ".json");
 
         int height = tilesIndex.length;
@@ -112,14 +123,21 @@ public class Saver {
         Image image = new Image(new File(texturePath).toURI().toString());
         PixelReader reader = image.getPixelReader();
         ArrayList<Tile> SavedTile = new ArrayList<>();
-        level.setOverTiles(overTiles);
+        level.setBehaviourTiles(overTiles);
         for (int j = 0; j < image.getWidth()/16; j++) {
             Image tileSkin = new WritableImage(reader, tileSize*j, 0, tileSize, tileSize);
             SavedTile.add(new Tile(tileSkin));
         }
+        Tile[][] ground = new Tile[height][width];
+        Tile[][] details = new Tile[height][width];
         for(int i=0;i<height;i++)
-            for(int j=0;j<width;j++)
-                level.getTiles()[i][j] = SavedTile.get(tilesIndex[i][j]);
+            for(int j=0;j<width;j++){
+                ground[i][j] = SavedTile.get(tilesIndex[i][j]);
+                if (detailsIndex[i][j]!=-1) details[i][j] = SavedTile.get(detailsIndex[i][j]);
+            }
+
+        level.setGroundLayerTiles(ground);
+        level.setDetails(details);
         return level;
     }
 
