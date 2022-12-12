@@ -21,7 +21,7 @@ public class Saver {
 
     /**
      * Use to select all texture to save keeping only usefully textures
-     * @param tiles the whole tile set
+     * @param tiles the whole tile set (details and ground)
      * @return reduced tiles set in an array list
      */
     private static ArrayList<Tile> selectTiles(Tile[][] tiles,Tile[][] details){
@@ -42,7 +42,7 @@ public class Saver {
 
     /**
      * Save texture of tiles in a png file
-     * @param selectedTiles all unique tiles
+     * @param selectedTiles all unique tiles (use selectTiles(...))
      * @param levelName name of the output file
      * @throws IOException file security or write issues
      */
@@ -99,23 +99,28 @@ public class Saver {
 
     /**
      * Load a level from file
-     * @param levelFile can be .level0 ,.level1 or .png
+     * @param levelFile can be .level0 ,.json or .png
      * @return the loaded level
-     * @throws Exception if one of the three files is missing
+     * @throws Exception IO Exception if one png or .level0 not found
      */
     public static Level loadLevel(File levelFile) throws Exception{
         String name = levelFile.getName().replace(extension0,"");
+        name = name.replace(".json","");
         String path = levelFile.getAbsolutePath().replace(levelFile.getName(),"");
         ObjectInputStream oot = new ObjectInputStream(Files.newInputStream(new File(path + name + extension0).toPath()));
         int[][] tilesIndex = (int[][]) oot.readObject();
-        int[][] detailsIndex = (int[][]) oot.readObject();
-
-        OverTile[][] overTiles=JSONIO.LoadOverTiles(path + name + ".json");
 
         int height = tilesIndex.length;
         int width = tilesIndex[0].length;
         int tileSize = Graphic_Const.TILES_SIZE;
 
+        int[][] detailsIndex = (int[][]) oot.readObject();
+        OverTile[][] overTiles;
+        try{
+             overTiles=JSONIO.LoadOverTiles(path + name + ".json");
+        }catch (IOException e){
+            overTiles=new OverTile[height][width];
+        }
         Level level = new Level(height,width);
 
         level.setName(name);
@@ -135,7 +140,6 @@ public class Saver {
                 ground[i][j] = SavedTile.get(tilesIndex[i][j]);
                 if (detailsIndex[i][j]!=-1) details[i][j] = SavedTile.get(detailsIndex[i][j]);
             }
-
         level.setGroundLayerTiles(ground);
         level.setDetails(details);
         return level;

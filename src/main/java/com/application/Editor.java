@@ -47,10 +47,7 @@ public class Editor extends Application {
         splitPane = new SplitPane(panel,level);
         splitPane.setOrientation(Orientation.HORIZONTAL);
         theStage.showingProperty().addListener(e-> splitPane.setDividerPosition(0,0.4));
-        splitPane.getDividers().get(0).positionProperty().addListener(e-> {
-            panel.resizeOptions(splitPane.getDividers().get(0).getPosition()*theStage.getWidth());
-            level.resizeOptions(theStage.getWidth()-panel.getWidth());
-        });
+
 
         BorderPane borderPane = new BorderPane(splitPane);
 
@@ -59,6 +56,10 @@ public class Editor extends Application {
         Scene scene = new Scene(borderPane, Graphic_Const.DEFAULT_WIDTH, Graphic_Const.DEFAULT_HEIGHT);
         theStage.setScene(scene);
         theStage.show();
+        splitPane.getDividers().get(0).positionProperty().addListener(e-> {
+            panel.resizeOptions(splitPane.getDividers().get(0).getPosition()*theStage.getWidth());
+            level.resizeOptions(theStage.getWidth()-panel.getWidth());
+        });
     }
 
     /**

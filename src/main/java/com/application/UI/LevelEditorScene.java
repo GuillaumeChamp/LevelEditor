@@ -26,7 +26,7 @@ public class LevelEditorScene extends Pane {
     ScrollBar verticalBar = new ScrollBar();
     protected Canvas canvas;
     private Level level;
-    private double ratio = Graphic_Const.ratioEditor;
+    private double printRatio = Graphic_Const.ratioEditor;
 
     /**
      * Private constructor
@@ -49,10 +49,10 @@ public class LevelEditorScene extends Pane {
         });
         this.setOnScroll(e->{
             if (e.isControlDown()){
-                if (e.getDeltaX()+e.getDeltaY()>0) ratio=ratio+0.2;
+                if (e.getDeltaX()+e.getDeltaY()>0) printRatio = printRatio +0.2;
                 else {
-                    ratio=ratio-0.2;
-                    if (ratio<0.8) ratio=0.8;
+                    printRatio = printRatio -0.2;
+                    if (printRatio <0.8) printRatio =0.8;
                 }
                 paint();
                 this.setBound(level.getGroundLayerTiles()[0].length,level.getGroundLayerTiles().length);
@@ -61,9 +61,13 @@ public class LevelEditorScene extends Pane {
             if(horizontalBar.getValue()-e.getDeltaX()<horizontalBar.getMax())
                 if (horizontalBar.getValue()-e.getDeltaX()>horizontalBar.getMin())
                     horizontalBar.setValue(horizontalBar.getValue()-e.getDeltaX()*1.1);
+                else horizontalBar.setValue(horizontalBar.getMin());
+            else horizontalBar.setValue(horizontalBar.getMax());
             if(verticalBar.getValue()-e.getDeltaY()<verticalBar.getMax())
                 if (verticalBar.getValue()-e.getDeltaY()>verticalBar.getMin())
                     verticalBar.setValue(verticalBar.getValue()-e.getDeltaY()*1.1);
+                else verticalBar.setValue(verticalBar.getMin());
+            else verticalBar.setValue(verticalBar.getMax());
             paint();
         });
 
@@ -77,7 +81,6 @@ public class LevelEditorScene extends Pane {
             paint();
         });
         this.getChildren().add(canvas);
-        this.setBound(200,200);
         paint();
     }
 
@@ -89,12 +92,13 @@ public class LevelEditorScene extends Pane {
     private void setBound(int hTiles,int vTiles) {
         final int horizontalOverFlow=1;
         final int verticalOverFlow=1;
-        this.horizontalBar.setMax((hTiles+horizontalOverFlow)*Graphic_Const.TILES_SIZE*ratio -this.getWidth());
+        this.horizontalBar.setMax((hTiles+horizontalOverFlow)*Graphic_Const.TILES_SIZE* printRatio -this.getWidth());
         if (horizontalBar.getValue()>horizontalBar.getMax()) this.horizontalBar.setValue(horizontalBar.getMax());
         if (horizontalBar.getValue()<0) this.horizontalBar.setValue(0);
-        this.verticalBar.setMax((vTiles+verticalOverFlow)*Graphic_Const.TILES_SIZE*ratio -this.getHeight());
+        this.verticalBar.setMax((vTiles+verticalOverFlow)*Graphic_Const.TILES_SIZE* printRatio -this.getHeight());
         if (verticalBar.getValue()>verticalBar.getMax()) this.verticalBar.setValue(verticalBar.getMax());
         if (verticalBar.getValue()<0) this.verticalBar.setValue(0);
+        paint();
     }
 
     /**
@@ -130,26 +134,26 @@ public class LevelEditorScene extends Pane {
         Tile[][] ground = level.getGroundLayerTiles();
         Tile[][] details = level.getDetails();
         OverTile[][] overTiles = level.getBehaviourTiles();
-        double sliderVerticalOffSet =  (verticalBar.getValue()/ratio/tileSize);
-        double sliderHorizontalOffSet = (horizontalBar.getValue()/ratio/tileSize);
-        for(int i = (int) Math.max(sliderHorizontalOffSet,0); i<Math.min(sliderHorizontalOffSet+this.getWidth()/tileSize/ratio,ground.length); i++){
-            for (int j = (int) Math.max(sliderVerticalOffSet,0); j<Math.min(sliderVerticalOffSet+this.getHeight()/tileSize/ratio,ground[0].length); j++){
+        double sliderVerticalOffSet =  (verticalBar.getValue()/ printRatio /tileSize);
+        double sliderHorizontalOffSet = (horizontalBar.getValue()/ printRatio /tileSize);
+        for(int i = (int) Math.max(sliderHorizontalOffSet,0); i<Math.min(sliderHorizontalOffSet+this.getWidth()/tileSize/ printRatio,ground.length); i++){
+            for (int j = (int) Math.max(sliderVerticalOffSet,0); j<Math.min(sliderVerticalOffSet+this.getHeight()/tileSize/ printRatio,ground[0].length); j++){
                 double x = (i-sliderHorizontalOffSet)*tileSize;
                 double y = (j-sliderVerticalOffSet)*tileSize;
                 if (ground[i][j]!=null) {
-                    gc.drawImage(ground[i][j].getSkin(), x * ratio, y * ratio, tileSize * ratio, tileSize * ratio);
+                    gc.drawImage(ground[i][j].getSkin(), x * printRatio, y * printRatio, tileSize * printRatio, tileSize * printRatio);
                 }
                 if (details[i][j]!=null && Graphic_Const.SHOW_DETAILS)
-                    gc.drawImage(details[i][j].getSkin(), x * ratio, y * ratio, tileSize * ratio, tileSize * ratio);
+                    gc.drawImage(details[i][j].getSkin(), x * printRatio, y * printRatio, tileSize * printRatio, tileSize * printRatio);
                 if (overTiles[i][j]!= null && Graphic_Const.SHOW_CALC){
                     if(overTiles[i][j] instanceof Warp) gc.setFill(Color.color(0.5,0.5,0.5,0.3));
                     if (overTiles[i][j] instanceof Encounter) gc.setFill(Color.color(0.8,0,0,0.3));
                     if (overTiles[i][j] instanceof Collision) gc.setFill(Color.color(0,0,0,0.8));
-                    gc.fillRect( x * ratio, y * ratio, tileSize * ratio, tileSize * ratio);
+                    gc.fillRect( x * printRatio, y * printRatio, tileSize * printRatio, tileSize * printRatio);
                     gc.setFill(Color.color(1,0,0,1));
-                    gc.fillText(String.valueOf(overTiles[i][j].getId()),(x+tileSize/2.0)*ratio,(y+tileSize/2.0)*ratio);
+                    gc.fillText(String.valueOf(overTiles[i][j].getId()),(x+tileSize/2.0)* printRatio,(y+tileSize/2.0)* printRatio);
                 }
-                if (Graphic_Const.SHOW_GRID) gc.strokeRect(x * ratio, y * ratio, tileSize * ratio, tileSize * ratio);
+                if (Graphic_Const.SHOW_GRID) gc.strokeRect(x * printRatio, y * printRatio, tileSize * printRatio, tileSize * printRatio);
             }
         }
     }
@@ -163,8 +167,8 @@ public class LevelEditorScene extends Pane {
     public void modifyTileAt(double x, double y, TileTyped newTile){
         int tileSize = Graphic_Const.TILES_SIZE;
         try {
-            double xIndex = Math.floor(x / (tileSize * ratio));
-            double yIndex = Math.floor(y / (tileSize * ratio));
+            double xIndex = Math.floor(x / (tileSize * printRatio));
+            double yIndex = Math.floor(y / (tileSize * printRatio));
             if (newTile instanceof Tile) {
                 if (EditorPanel.getPanel().getLayer().equals("ground"))
                     level.getGroundLayerTiles()[(int) xIndex][(int) yIndex] = (Tile) newTile;
@@ -187,7 +191,6 @@ public class LevelEditorScene extends Pane {
     public void changeLevelSize(int x, int y){
         level.changeSize(x,y);
         this.setBound(x,y);
-        paint();
     }
 
     /**
@@ -212,12 +215,11 @@ public class LevelEditorScene extends Pane {
      */
     public void setLevel(Level loadLevel) {
         this.level=loadLevel;
-        paint();
+        this.setBound(level.getGroundLayerTiles()[0].length,level.getGroundLayerTiles().length);
     }
 
     public void resizeOptions(double width) {
         this.setPrefWidth(width);
         this.setBound(level.getGroundLayerTiles()[0].length,level.getGroundLayerTiles().length);
-        paint();
     }
 }

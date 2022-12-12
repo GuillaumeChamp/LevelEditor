@@ -150,8 +150,8 @@ public class EditorPanel extends VBox {
      * @return HBox with TextField on it
      */
     private HBox createTextField(){
-        widthField = new TextField("160");
-        heightField = new TextField("160");
+        widthField = new TextField();
+        heightField = new TextField();
         widthField.setTextFormatter(new TextFormatter<>(new NumberStringConverter()));
         heightField.setTextFormatter(new TextFormatter<>(new NumberStringConverter()));
         widthField.setText("200");
