@@ -33,13 +33,19 @@ public class LevelEditorScene extends Pane {
      */
     private LevelEditorScene() {
         this.setWidth(Graphic_Const.DEFAULT_WIDTH);
-        //this.setPrefWidth(Graphic_Const.DEFAULT_WIDTH);
         this.setHeight(Graphic_Const.DEFAULT_HEIGHT);
-        verticalBar.setLayoutX(this.getWidth() - 20);
+        verticalBar.setTranslateX(this.getWidth() - 40);
         verticalBar.setOrientation(Orientation.VERTICAL);
-        verticalBar.setPrefHeight(this.getHeight());
+        verticalBar.setPrefHeight(this.getHeight()-40);
+        //FIXME graphical bug
+        verticalBar.setVisible(true);
+        horizontalBar.setOrientation(Orientation.HORIZONTAL);
+        horizontalBar.setPrefWidth(this.getWidth());
+        horizontalBar.setVisible(true);
+        horizontalBar.setTranslateY(this.getHeight()-40);
+        this.getChildren().addAll(horizontalBar,verticalBar);
         level = new Level(200,200);
-        this.canvas = new Canvas(this.getWidth(),this.getHeight());
+        this.canvas = new Canvas(this.getWidth()-50,this.getHeight()-50);
         canvas.setOnMouseClicked(e->{
             double x = (e.getX()) + (horizontalBar.getValue());
             double y = (e.getY()) + (verticalBar.getValue());

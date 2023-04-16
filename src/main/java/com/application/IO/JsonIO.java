@@ -10,7 +10,7 @@ import java.io.*;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 
-public interface JSONIO {
+public interface JsonIO {
      static void saveOverTiles(OverTile[][] overTiles, String path, String levelName) throws IOException {
          FileWriter json = new FileWriter(path);
          JSONObject topLevel = new JSONObject();

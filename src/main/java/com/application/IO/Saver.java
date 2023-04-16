@@ -94,7 +94,7 @@ public class Saver {
         oot.flush();
         oot.close();
 
-        JSONIO.saveOverTiles(overTiles,path+name+".json",name);
+        JsonIO.saveOverTiles(overTiles,path+name+".json",name);
     }
 
     /**
@@ -117,7 +117,7 @@ public class Saver {
         int[][] detailsIndex = (int[][]) oot.readObject();
         OverTile[][] overTiles;
         try{
-             overTiles=JSONIO.LoadOverTiles(path + name + ".json");
+             overTiles= JsonIO.LoadOverTiles(path + name + ".json");
         }catch (IOException e){
             overTiles=new OverTile[height][width];
         }
